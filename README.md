@@ -1,63 +1,59 @@
 # Capsule Pop
-A game created with Godot with specific intention to work with Discord activities.
+*Created for Discord App Pitches 2024, Capsule Pop* is a game constructed with Godot, with
+the intention of being run directly within the Discord client using the Discord Embedded App
+SDK. This Project serves as a short term learning project for Godot and it's multiplayer
+functionality. I intend to use Godot for my future long term game projects, so this event
+is the perfect opportunity to learn more about the engine. 
 
-# What is Capsule Pop?
-Capsule Pop is a game created for the Discord App Pitches 2024. It utilizes Godot and the Discord
-embedded app SDK to run directly inside of a Discord client. This project serves a short term
-learning project for Godot and it's multiplayer functionallity. I intend to use Godot for my future
-long term game projects so this is a perfect way to learn about the engine.
 
 ### Discord App Pitches 2024 Category Target
-This game will be targeting the compete section as well as they collect and create section.
+Capsule Pop will be targeting the “Compete” and “Collect and Create” sections for Discord 
+App Pitches 2024.
 
 ---
 
 # Game Loop
 > [!TIP]
-> If you are not interested in learning about the game loop and just want to play hop down to the
+> If you are not interested in learning about the game loop and just want to play, hop down to the
 > [How to Play](#how-to-play) section.
 
-The main gameplay loop currently has 4 states:
+The main gameplay loop contains 4 phases:
 - [Game Start](#game-start)
 - [Team Building](#team-building)
 - [Battle](#battle)
 - [Game End](#game-end)
 
 ## Game Start
-This is where players will connect to the server, and sit in lobby until the game has been started.
-The game will start when all players are connected and toggle a ready check.
+During this phase, players will connect to a server, and sit in a lobby until the game has been
+started. The game will start when all connected players toggle a ready check.
 
 ## Team Building
-Team building has all of the players interacting with a table, the table will have physics properties,
-each player can tilt the board in any direction, and eventually the board will return to a neutral. 
-The goal of moving the table around is to have CAPSULES fall onto your side of the board and collected
-to your party.
+The "Team Building" phase consists of players interacting with a table. The table will have physics properties, allowing players to tilt the board in any direction. Players will attempt to have CAPSULES fall onto their side of the board by shifting around the table, adding to their party.
 
-**CAPSULES** are containers containing CREATURES to collect to your party, these elements can be used during the
-battle phase. CAPSULES do not depict which specific CREATURE is in them but do indicate what type of element
-the CREATURE is.
+**CAPSULES** are containers containing **CREATURES**, which are added to your party. Each creature contains
+an associated element, such as fire or water. Each **CAPSULE** will indicate the **CREATURE**'s associated
+element, but will not indicate the specific **CREATURE** within.
 
-Once a player has collect a certain amount of creatures for the team building phase they cannot collect any more.
-Although they can still control how the board is tilted.
+Once a player has collected a certain amount of **CAPSULES** during the "Team Building" phase, they cannot collect any more. However, they can still continue to tilt the board.
 
 ## Battle
-This is where points get determined. Each combat victory results in 1 point being awarded to the victor. At this
-stage of the game you play your collected CREATURES onto the board. The player chooses how these CREATURES move
-but selected a group of them and clicking around the board. The CREATURES then attack on an automated timer.
+During the “Battle Stage,” players must play the **CREATURES** they have acquired onto the board. The player chooses how these **CREATURES** move by selecting a group of them and clicking around the board. The **CREATURES** then attack periodically through an automated timer.
 
-**CREATURES** are your gladiators, each CREATURE has a different element, attack style, attack speed, and movespeed.
+**CREATURES** are your gladiators, with each **CREATURE** having a unique element, attack style, attack speed.
+
+Points are awarded after each battle, with each combat victory resulting in 1 point being awarded to that player.
 
 ## Game End
-When a certain threshold of points is met, the player meeting that threshold is considered the winner and the game
-is reset.
+
+When a player meets a certain threshold of points, that player will be deemed the winner and the game will reset.
 
 ---
 
 # Controls
-The player will be only using their mouse to interact with the game. Potential keyboard shortcuts can be considered
-for selected individual creatures in battle mode.
+Only a mouse is required to interact with the game. Players may opt to use keyboard shortcuts if desired.
 
 ---
+
 # How to Play
 No current available way to play, please check back in the future.
 
