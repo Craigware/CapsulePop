@@ -30,7 +30,7 @@ started. The game will start when all connected players toggle a ready check.
 ## Team Building
 The "Team Building" phase consists of players interacting with a table. The table will have physics properties, allowing players to tilt the board in any direction. Players will attempt to have CAPSULES fall onto their side of the board by shifting around the table, adding to their party.
 
-**CAPSULES** are containers containing **CREATURES**, which are added to your party. Each creature contains
+**CAPSULES** are containers containing **CREATURES**, which are added to your party. Each **CREATURE** contains
 an associated element, such as fire or water. Each **CAPSULE** will indicate the **CREATURE**'s associated
 element, but will not indicate the specific **CREATURE** within.
 
