@@ -1,7 +1,7 @@
 # Capsule Pop
 *Created for Discord App Pitches 2024, Capsule Pop* is a game constructed with Godot, with
 the intention of being run directly within the Discord client using the Discord Embedded App
-SDK. This Project serves as a short term learning project for Godot and it's multiplayer
+SDK. Capsule Pop serves as a short term learning project for Godot and its multiplayer
 functionality. I intend to use Godot for my future long term game projects, so this event
 is the perfect opportunity to learn more about the engine. 
 
