@@ -1,7 +1,7 @@
 # Capsule Pop
 *Created for Discord App Pitches 2024, Capsule Pop* is a game constructed with Godot, with
 the intention of being run directly within the Discord client using the Discord Embedded App
-SDK. This Project serves as a short term learning project for Godot and it's multiplayer
+SDK. Capsule Pop serves as a short term learning project for Godot and its multiplayer
 functionality. I intend to use Godot for my future long term game projects, so this event
 is the perfect opportunity to learn more about the engine. 
 
@@ -30,7 +30,7 @@ started. The game will start when all connected players toggle a ready check.
 ## Team Building
 The "Team Building" phase consists of players interacting with a table. The table will have physics properties, allowing players to tilt the board in any direction. Players will attempt to have CAPSULES fall onto their side of the board by shifting around the table, adding to their party.
 
-**CAPSULES** are containers containing **CREATURES**, which are added to your party. Each creature contains
+**CAPSULES** are containers containing **CREATURES**, which are added to your party. Each **CREATURE** contains
 an associated element, such as fire or water. Each **CAPSULE** will indicate the **CREATURE**'s associated
 element, but will not indicate the specific **CREATURE** within.
 
