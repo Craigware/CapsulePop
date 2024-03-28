@@ -11,9 +11,13 @@ namespace Critter {
     
 
     [GlobalClass]
-	public partial class Critter : Resource {
+	public partial class Creature : Resource {
         [Export] public Texture2D Sprite { get; set; }
         [Export] public Element Element { get; set; }
-        [Export] public BaseStats BaseStats { get; set; }
+        [Export] public Stats BaseStats { get; set; }
 	}
+
+    public partial class PartyCreature : Creature {
+        public Stats CurrentStats { get; set; }
+    }    
 }

@@ -1,21 +1,38 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
-namespace Critter {
-    public partial class Capsule : Sprite3D {
-        private Element element;
+namespace Critter
+{
+    public partial class Capsule : RigidBody3D
+    {
+        public Element element = Element.FIRE;
+        private StandardMaterial3D material;
+
+        PackedScene cap = GD.Load<PackedScene>("res://Scenes/Components/Capsule.tscn");
 
         private static readonly Dictionary<Element, Color> elementColorPairs = new() {
-            {Element.FIRE, new Color( )},
-            {Element.WATER, new Color( )},
-            {Element.GRASS, new Color( )},
-            {Element.ELECTRIC, new Color( )},
-            {Element.GHOST, new Color( )}
+            {Element.FIRE, new Color("#ca6f42")},
+            {Element.WATER, new Color("889cc5")},
+            {Element.GRASS, new Color("#1f9343")},
+            {Element.ELECTRIC, new Color("#c3f246")},
+            {Element.GHOST, new Color("#6f5475")}
         };
 
-        public Capsule(Element element) {
-            this.element = element;
-            Modulate = elementColorPairs[element];
+        public override void _Ready() {
+            material = new() {
+                AlbedoColor = elementColorPairs[this.element]
+            };
+
+            float initXForce = new Random().Next(-50,50);
+            float initZForce = new Random().Next(-50,50);
+            initXForce /= 100;
+            initZForce /= 100;
+
+            Vector3 initialForce = new(initXForce,1,initZForce);
+            ApplyForce(initialForce*100*5);
+
+            GetChild<MeshInstance3D>(0).MaterialOverlay = material;
         }
     }
 }

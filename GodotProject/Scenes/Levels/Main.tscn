@@ -1,3 +1,69 @@
-[gd_scene format=3 uid="uid://ds1u6m8i2uuqe"]
+[gd_scene load_steps=11 format=3 uid="uid://ds1u6m8i2uuqe"]
+
+[ext_resource type="PackedScene" uid="uid://b1iorggh3e00" path="res://Scenes/Components/Capsule.tscn" id="1_3gmp8"]
+[ext_resource type="Script" path="res://Scenes/Levels/CapsuleSpawner.cs" id="2_wbth3"]
+[ext_resource type="PackedScene" uid="uid://bnxmy73bd4y0r" path="res://Assets/Models/table_v1.fbx" id="3_n0m3o"]
+[ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="4_id657"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
+
+[sub_resource type="Sky" id="Sky_wjv06"]
+sky_material = SubResource("PhysicalSkyMaterial_5gb8b")
+
+[sub_resource type="Environment" id="Environment_kyte4"]
+background_mode = 2
+sky = SubResource("Sky_wjv06")
+ambient_light_source = 3
+ambient_light_color = Color(0.459573, 0.68895, 0.75118, 1)
+reflected_light_source = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gs2me"]
+albedo_color = Color(0.357438, 0.2845, 0.296278, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_t2me2"]
+material = SubResource("StandardMaterial3D_gs2me")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fgqbs"]
+size = Vector3(1, 0.001, 1)
 
 [node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 0.179302, 6.40715, 3.69795)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.999996, -0.00265045, -0.00091412, 0.00216026, 0.520579, 0.853811, -0.00178711, -0.85381, 0.520582, 0.0129597, 3.19224, -0.00261283)
+shadow_enabled = true
+shadow_bias = 2.855
+shadow_normal_bias = 10.0
+shadow_blur = 3.041
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kyte4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(28.7486, 0, 0, 0, 1, 0, 0, 0, 24.3196, 0.0368052, -3, -0.00073719)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("PlaneMesh_t2me2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_fgqbs")
+
+[node name="Capsule" parent="." instance=ExtResource("1_3gmp8")]
+
+[node name="CapsuleSpawner" type="Node3D" parent="."]
+script = ExtResource("2_wbth3")
+ballSpawnRate = 0.5
+spawnLimit = 10000
+
+[node name="table_v1" parent="." instance=ExtResource("3_n0m3o")]
+transform = Transform3D(1, 0, 0, 0, 0.0209947, 0.99978, 0, -0.99978, 0.0209947, 1.52544, 0.237086, -0.21061)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_id657")

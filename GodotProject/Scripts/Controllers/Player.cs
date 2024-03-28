@@ -1,10 +1,39 @@
 using Godot;
+using Critter;
 
-namespace Player {
-    public partial class Player : Control {
-        [Export] public Color CursorColor { get; set; }
-        [Export] public TextureRect playerCursor;
-        [Export] public Camera3D cam;
+namespace Player
+{
+    public class Party
+    {
+        Creature[] party = new Creature[6];
+
+        public bool AddToParty(Creature creature) {
+            for (int i = 0; i < party.Length; i++) {
+                if (party[i] == null) {
+                    party[i] = creature;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public int Count() {
+            int count = 0;
+            foreach (Creature c in party) {
+                if (c == null) continue;
+                count++;
+            }
+            return count;
+        }
+    }
+
+    public partial class Player : Control
+    {
+        public Color CursorColor { get; set; }
+        public TextureRect playerCursor;
+        public Camera3D cam;
+        public Party party = new();
 
         public const float CameraXZPos = 10;
         public const float CameraYPos = 5;
@@ -13,14 +42,12 @@ namespace Player {
 
         private Node3D root;
 
-        public override void _Ready()
-        {
+        public override void _Ready() {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
             root = GetTree().Root.GetChild<Node3D>(0);
         }
 
-        public override void _Input(InputEvent @event)
-        {
+        public override void _Input(InputEvent @event) {
             if (@event is InputEventMouseMotion e) 
             {
                 playerCursor.Position = e.Position - playerCursor.Size/2; 
@@ -46,7 +73,7 @@ namespace Player {
             if (res.ContainsKey("collider"))
             {
                 CollisionObject3D collider = (CollisionObject3D) res["collider"];
-                
+                GD.Print(collider);
             }
         }
     }

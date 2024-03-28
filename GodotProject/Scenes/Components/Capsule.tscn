@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://b1iorggh3e00"]
+
+[ext_resource type="Script" path="res://Scripts/Controllers/Capsule.cs" id="1_ly6o8"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oi554"]
+bounce = 0.7
+
+[sub_resource type="SphereMesh" id="SphereMesh_1k75p"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vc17v"]
+radius = 0.25
+
+[node name="Capsule" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_oi554")
+script = ExtResource("1_ly6o8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_1k75p")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_vc17v")
