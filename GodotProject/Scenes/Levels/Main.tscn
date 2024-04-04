@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://ds1u6m8i2uuqe"]
 
-[ext_resource type="PackedScene" uid="uid://b1iorggh3e00" path="res://Scenes/Components/Capsule.tscn" id="1_3gmp8"]
-[ext_resource type="Script" path="res://Scenes/Levels/CapsuleSpawner.cs" id="2_wbth3"]
-[ext_resource type="PackedScene" uid="uid://bnxmy73bd4y0r" path="res://Assets/Models/table_v1.fbx" id="3_n0m3o"]
+[ext_resource type="Script" path="res://Scripts/Controllers/CapsuleSpawner.cs" id="2_wbth3"]
+[ext_resource type="Script" path="res://Scripts/Controllers/FPSCounter.cs" id="4_6h0c1"]
 [ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="4_id657"]
+[ext_resource type="PackedScene" uid="uid://cldye0fatmimo" path="res://Assets/Models/table_v4.fbx" id="5_o1ysr"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
 
@@ -35,8 +35,8 @@ transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.999996, -0.00265045, -0.00091412, 0.00216026, 0.520579, 0.853811, -0.00178711, -0.85381, 0.520582, 0.0129597, 3.19224, -0.00261283)
 shadow_enabled = true
-shadow_bias = 2.855
-shadow_normal_bias = 10.0
+shadow_normal_bias = 1.592
+shadow_opacity = 0.61
 shadow_blur = 3.041
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -51,19 +51,27 @@ mesh = SubResource("PlaneMesh_t2me2")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_fgqbs")
 
-[node name="Capsule" parent="." instance=ExtResource("1_3gmp8")]
-
 [node name="CapsuleSpawner" type="Node3D" parent="."]
 script = ExtResource("2_wbth3")
 ballSpawnRate = 0.5
-spawnLimit = 10000
-
-[node name="table_v1" parent="." instance=ExtResource("3_n0m3o")]
-transform = Transform3D(1, 0, 0, 0, 0.0209947, 0.99978, 0, -0.99978, 0.0209947, 1.52544, 0.237086, -0.21061)
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4_id657")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_6h0c1")
+
+[node name="table_v4" parent="." instance=ExtResource("5_o1ysr")]
+transform = Transform3D(0.998454, 0.0555737, -0.00113734, 0.000745065, 0.00707886, 0.999975, 0.0555803, -0.998429, 0.00702651, 0, 0, 0)

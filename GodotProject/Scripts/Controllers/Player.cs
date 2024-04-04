@@ -30,8 +30,8 @@ namespace Player
 
     public partial class Player : Control
     {
-        public Color CursorColor { get; set; }
-        public TextureRect playerCursor;
+        // public Color CursorColor { get; set; }
+        // public TextureRect playerCursor;
         public Camera3D cam;
         public Party party = new();
 
@@ -48,10 +48,10 @@ namespace Player
         }
 
         public override void _Input(InputEvent @event) {
-            if (@event is InputEventMouseMotion e) 
-            {
-                playerCursor.Position = e.Position - playerCursor.Size/2; 
-            }
+            // if (@event is InputEventMouseMotion e) 
+            // {
+            //     playerCursor.Position = e.Position - playerCursor.Size/2; 
+            // }
 
             if (Input.IsActionJustPressed("Click")) {
                 Click(GetViewport().GetMousePosition());

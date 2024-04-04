@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1iorggh3e00"]
+[gd_scene load_steps=8 format=3 uid="uid://b1iorggh3e00"]
 
 [ext_resource type="Script" path="res://Scripts/Controllers/Capsule.cs" id="1_ly6o8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oi554"]
+friction = 0.31
 bounce = 0.7
 
 [sub_resource type="SphereMesh" id="SphereMesh_1k75p"]
@@ -11,6 +12,28 @@ height = 0.5
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_vc17v"]
 radius = 0.25
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bb7ew"]
+emission_shape_offset = Vector3(0, 1, 0)
+emission_shape_scale = Vector3(0.5, 0.5, 0.5)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 0)
+gravity = Vector3(0, 0, 0)
+hue_variation_min = -0.03
+hue_variation_max = -0.03
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g60i4"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.73278, 0.81, 0.3888, 1)
+disable_receive_shadows = true
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_snhrc"]
+material = SubResource("StandardMaterial3D_g60i4")
 
 [node name="Capsule" type="RigidBody3D"]
 physics_material_override = SubResource("PhysicsMaterial_oi554")
@@ -21,3 +44,17 @@ mesh = SubResource("SphereMesh_1k75p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_vc17v")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+top_level = true
+cast_shadow = 0
+emitting = false
+amount = 2
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_bb7ew")
+draw_pass_1 = SubResource("QuadMesh_snhrc")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="."]
+remote_path = NodePath("../GPUParticles3D")
+update_rotation = false
+update_scale = false

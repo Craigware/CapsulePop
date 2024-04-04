@@ -8,7 +8,13 @@ namespace Critter {
         ELECTRIC,
         GHOST
     }
-    
+
+    public enum Rarity {
+        Common,
+        Rare,
+        Epic,
+        Legendary
+    }    
 
     [GlobalClass]
 	public partial class Creature : Resource {
@@ -19,5 +25,6 @@ namespace Critter {
 
     public partial class PartyCreature : Creature {
         public Stats CurrentStats { get; set; }
+        public Rarity Rarity { get; set; }
     }    
 }

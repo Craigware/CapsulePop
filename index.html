@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capsule Pop</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+ <section id="Banner">
+  <h1>This is going to contain Capsule Pops logo and maybe some capsules.</h1>
+ </section> 
+  
+  <p>
+    Created for Discord App Pitches 2024, Capsule Pop is a game constructed with Godot, with the intention of being run directly within the Discord client using the Discord Embedded App SDK. Capsule Pop serves as a short term learning project for Godot and its multiplayer functionality. I intend to use Godot for my future long term game projects, so this event is the perfect opportunity to learn more about the engine.
+  </p>
+  
+  <h2>Discord App Pitches 2024 Category Target</h2>
+  <p>
+    Capsule Pop will be targeting the “Compete” and “Collect and Create” sections for Discord App Pitches 2024. 
+  </p>
+
+  <h1>Game Loop</h1>
+
+  <p class="tip">
+    If you are not interested in learning about the game loop and just want to play, hop down to the How to Play section.
+  </p>
+
+  <h2>The main gameplay loop contains 4 phases:</h2>
+  <ul>
+    <li>Game Start</li>
+    <li>Team Building</li>
+    <li>Battle</li>
+    <li>Game End</li>
+  </ul>
+
+  <h2>Game Start</h2>
+  <p>During this phase, players will connect to a server, and sit in a lobby until the game has been started. The game will start when all connected players toggle a ready check.</p>
+
+  <h2>Team Building</h2>
+  <p>The "Team Building" phase consists of players interacting with a table. The table will have physics properties, allowing players to tilt the board in any direction. Players will attempt to have CAPSULES fall onto their side of the board by shifting around the table, adding to their party.</p>
+  <p>CAPSULES are containers containing CREATURES, which are added to your party. Each CREATURE contains an associated element, such as fire or water. Each CAPSULE will indicate the CREATURE's associated element, but will not indicate the specific CREATURE within.</p>
+  <p>Once a player has collected a certain amount of CAPSULES during the "Team Building" phase, they cannot collect any more. However, they can still continue to tilt the board.</p>
+
+  <h2>Battle</h2>
+  <p>During the “Battle Stage,” players must play the CREATURES they have acquired onto the board. The player chooses how these CREATURES move by selecting a group of them and clicking around the board. The CREATURES then attack periodically through an automated timer.</p>
+  <p>CREATURES are your gladiators, with each CREATURE having a unique element, attack style, attack speed.</p>
+  <p>Points are awarded after each battle, with each combat victory resulting in 1 point being awarded to that player.</p>
+
+  <h2>Game End</h2>
+  <p>When a player meets a certain threshold of points, that player will be deemed the winner and the game will reset.</p>
+</body>
+</html>
