@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1iorggh3e00"]
+[gd_scene load_steps=9 format=3 uid="uid://b1iorggh3e00"]
 
 [ext_resource type="Script" path="res://Scripts/Controllers/Capsule.cs" id="1_ly6o8"]
+[ext_resource type="Texture2D" uid="uid://btywe41d2iyqu" path="res://Assets/Images/Asset 1.png" id="2_hxejd"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oi554"]
 friction = 0.31
@@ -40,7 +41,14 @@ physics_material_override = SubResource("PhysicsMaterial_oi554")
 script = ExtResource("1_ly6o8")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("SphereMesh_1k75p")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.625, 0, 0, 0, 0.625, 0, 0, 0, 0.5, 0, 0, 0)
+top_level = true
+billboard = 1
+texture = ExtResource("2_hxejd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_vc17v")
@@ -56,5 +64,10 @@ draw_pass_1 = SubResource("QuadMesh_snhrc")
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="."]
 remote_path = NodePath("../GPUParticles3D")
+update_rotation = false
+update_scale = false
+
+[node name="RemoteTransform3D2" type="RemoteTransform3D" parent="."]
+remote_path = NodePath("../Sprite3D")
 update_rotation = false
 update_scale = false

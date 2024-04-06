@@ -13,15 +13,11 @@ p {
 
 body {
   margin: 0 auto;
-  width: 50%;
+  width: 50%;  
 }
 
 li {
   list-style-position: inside;
-}
-
-h1 { 
-  text-align: center;
 }
 
 h1 {
@@ -30,11 +26,11 @@ h1 {
 }
 
 h2 {
-  margin: 4px 0px;
+  margin: 16px 0px 8px 0px;
 }
 
 p {
-  margin: 2px 0;
+  margin: 8px 0;
 }
 
 #Banner {

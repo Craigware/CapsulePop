@@ -30,17 +30,31 @@ namespace Player
 
     public partial class Player : Control
     {
-        // public Color CursorColor { get; set; }
-        // public TextureRect playerCursor;
-        public Camera3D cam;
-        public Party party = new();
-
         public const float CameraXZPos = 10;
         public const float CameraYPos = 5;
-
         private const float RayLength = 1000.0f;
 
+        public int Score = 0;
+        public bool StartReady = false;
+        public int PlayerID;
+
+        public string PlayerName = "Null";
+        public Texture2D PlayerIcon;
+
+        public Color CursorColor { get; set; }
+        public Party party = new();
+
+        [Export] public TextureRect playerCursor;
+        [Export] public Camera3D cam;
+
         private Node3D root;
+
+        public Player() : this(0, null, "Unnamed") {}
+        public Player(int id, Texture2D playerIcon, string playerName) {
+            PlayerID = id;
+            PlayerName = playerName;
+            PlayerIcon = playerIcon;
+        }
 
         public override void _Ready() {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
@@ -48,10 +62,10 @@ namespace Player
         }
 
         public override void _Input(InputEvent @event) {
-            // if (@event is InputEventMouseMotion e) 
-            // {
-            //     playerCursor.Position = e.Position - playerCursor.Size/2; 
-            // }
+            if (@event is InputEventMouseMotion e) 
+            {
+                playerCursor.Position = e.Position - playerCursor.Size/2; 
+            }
 
             if (Input.IsActionJustPressed("Click")) {
                 Click(GetViewport().GetMousePosition());
@@ -73,7 +87,7 @@ namespace Player
             if (res.ContainsKey("collider"))
             {
                 CollisionObject3D collider = (CollisionObject3D) res["collider"];
-                GD.Print(collider);
+                GD.Print((Table) collider.GetParent().GetParent().GetParent());
             }
         }
     }

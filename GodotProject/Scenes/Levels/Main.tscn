@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://ds1u6m8i2uuqe"]
 
+[ext_resource type="Script" path="res://Scripts/Managers/GameSate.cs" id="1_1kvdc"]
 [ext_resource type="Script" path="res://Scripts/Controllers/CapsuleSpawner.cs" id="2_wbth3"]
+[ext_resource type="PackedScene" uid="uid://d05alnbm2ydgf" path="res://Scenes/Components/Player.tscn" id="3_h7m4c"]
 [ext_resource type="Script" path="res://Scripts/Controllers/FPSCounter.cs" id="4_6h0c1"]
-[ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="4_id657"]
-[ext_resource type="PackedScene" uid="uid://cldye0fatmimo" path="res://Assets/Models/table_v4.fbx" id="5_o1ysr"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
 
@@ -27,44 +27,22 @@ material = SubResource("StandardMaterial3D_gs2me")
 [sub_resource type="BoxShape3D" id="BoxShape3D_fgqbs"]
 size = Vector3(1, 0.001, 1)
 
-[node name="Node3D" type="Node3D"]
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("PlayersContainer")]
+script = ExtResource("1_1kvdc")
+PlayersContainer = NodePath("GUI/Players")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 0.179302, 6.40715, 3.69795)
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.999996, -0.00265045, -0.00091412, 0.00216026, 0.520579, 0.853811, -0.00178711, -0.85381, 0.520582, 0.0129597, 3.19224, -0.00261283)
-shadow_enabled = true
-shadow_normal_bias = 1.592
-shadow_opacity = 0.61
-shadow_blur = 3.041
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_kyte4")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(28.7486, 0, 0, 0, 1, 0, 0, 0, 24.3196, 0.0368052, -3, -0.00073719)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("PlaneMesh_t2me2")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_fgqbs")
-
-[node name="CapsuleSpawner" type="Node3D" parent="."]
-script = ExtResource("2_wbth3")
-ballSpawnRate = 0.5
-
-[node name="Control" type="Control" parent="."]
+[node name="GUI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("4_id657")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+[node name="FPSCounter" type="RichTextLabel" parent="GUI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -73,5 +51,41 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_6h0c1")
 
-[node name="table_v4" parent="." instance=ExtResource("5_o1ysr")]
-transform = Transform3D(0.998454, 0.0555737, -0.00113734, 0.000745065, 0.00707886, 0.999975, 0.0555803, -0.998429, 0.00702651, 0, 0, 0)
+[node name="Players" type="Control" parent="GUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Player" parent="GUI/Players" node_paths=PackedStringArray("playerCursor") instance=ExtResource("3_h7m4c")]
+layout_mode = 1
+playerCursor = NodePath("Cursor")
+
+[node name="Cameras" type="Node" parent="."]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(0.999996, -0.00265045, -0.000914119, 0.00216026, 0.520579, 0.853811, -0.00178711, -0.85381, 0.520582, 0.0129597, 3.19224, -0.00261283)
+shadow_enabled = true
+shadow_normal_bias = 1.592
+shadow_opacity = 0.61
+shadow_blur = 3.041
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_kyte4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Environment"]
+transform = Transform3D(28.7486, 0, 0, 0, 1, 0, 0, 0, 24.3196, 0.0368052, -3, -0.00073719)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/StaticBody3D"]
+mesh = SubResource("PlaneMesh_t2me2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/StaticBody3D"]
+shape = SubResource("BoxShape3D_fgqbs")
+
+[node name="CapsuleSpawner" type="Node3D" parent="Environment"]
+script = ExtResource("2_wbth3")
+ballSpawnRate = 0.5
