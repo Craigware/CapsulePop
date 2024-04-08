@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Scripts/Managers/GameSate.cs" id="1_1kvdc"]
 [ext_resource type="Script" path="res://Scripts/Controllers/CapsuleSpawner.cs" id="2_wbth3"]
+[ext_resource type="Script" path="res://Scripts/Controllers/UI/FPSCounter.cs" id="3_8sfnp"]
 [ext_resource type="PackedScene" uid="uid://d05alnbm2ydgf" path="res://Scenes/Components/Player.tscn" id="3_h7m4c"]
-[ext_resource type="Script" path="res://Scripts/Controllers/FPSCounter.cs" id="4_6h0c1"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
 
@@ -29,10 +29,19 @@ size = Vector3(1, 0.001, 1)
 
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("PlayersContainer")]
 script = ExtResource("1_1kvdc")
-PlayersContainer = NodePath("GUI/Players")
+PlayersContainer = NodePath("Players")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 0.179302, 6.40715, 3.69795)
+[node name="Players" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Player" parent="Players" node_paths=PackedStringArray("playerCursor") instance=ExtResource("3_h7m4c")]
+layout_mode = 1
+playerCursor = NodePath("Cursor")
 
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
@@ -49,21 +58,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("4_6h0c1")
-
-[node name="Players" type="Control" parent="GUI"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Player" parent="GUI/Players" node_paths=PackedStringArray("playerCursor") instance=ExtResource("3_h7m4c")]
-layout_mode = 1
-playerCursor = NodePath("Cursor")
+script = ExtResource("3_8sfnp")
 
 [node name="Cameras" type="Node" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 0.179302, 6.40715, 3.69795)
 
 [node name="Environment" type="Node" parent="."]
 

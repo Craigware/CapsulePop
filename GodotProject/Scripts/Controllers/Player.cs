@@ -87,7 +87,7 @@ namespace Player
             if (res.ContainsKey("collider"))
             {
                 CollisionObject3D collider = (CollisionObject3D) res["collider"];
-                GD.Print((Table) collider.GetParent().GetParent().GetParent());
+                
             }
         }
     }

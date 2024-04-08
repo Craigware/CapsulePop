@@ -1,47 +1,33 @@
+using System;
 using Godot;
 
 namespace Server {    
-    public partial class Server : Node3D
+    public partial class Server : Node
     {
-        public enum GameStates {
-            Start,
-            TeamBuilding,
-            Battle,
-            End
-        }
-
-        const int PORT = 524;
+        const int PORT = 52401;
         const int MAX_PLAYERS = 4;
 
         private MultiplayerApi multiplayer;
+        private Godot.Collections.Array<long> PlayerIDs = new();
 
-        private GameStates GameState = GameStates.Start;
-        private Godot.Collections.Array<int> PlayerIDs = new();
-        private int PlayerCount;
+        private GameSate gameSateManager;
 
         public override void _Ready() {
             multiplayer = GetTree().GetMultiplayer();
             var peer = new ENetMultiplayerPeer();
             peer.CreateServer(PORT, MAX_PLAYERS);
             multiplayer.MultiplayerPeer = peer;
+            multiplayer.PeerConnected += PlayerJoin;
+
+            GD.Print("Server Started");
         }
 
-        private void ChangeGameState(GameStates newState) {
-            GameState = newState;
+        public void PlayerJoin(long playerId) {  
+            GD.Print("WAT!");           
         }
 
-        public void PlayerJoin(int playerId) {
-            PlayerIDs.Add(playerId);
-            PlayerCount++;
-        }
-
-        public void PlayerLeave(int playerId) {
+        public void PlayerLeave(long playerId) {
             PlayerIDs.Remove(playerId);
-            PlayerCount--;
-        }
-
-        public void GameStart() {
-            ChangeGameState(GameStates.TeamBuilding);
-        }
+        } 
     }
 }
