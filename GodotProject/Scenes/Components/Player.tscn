@@ -1,26 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://d05alnbm2ydgf"]
+[gd_scene load_steps=3 format=3 uid="uid://x8udmw01wt4i"]
 
-[ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="1_a32hr"]
+[ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="1_sx8xq"]
+[ext_resource type="Texture2D" uid="uid://da1ly7hqu10df" path="res://Assets/Images/Cursor.svg" id="2_lowat"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rk3js"]
-width = 124
-height = 124
-
-[node name="Player" type="Control" node_paths=PackedStringArray("playerCursor", "cam")]
-auto_translate_mode = 1
+[node name="Player" type="Control" node_paths=PackedStringArray("cursor", "nameDisplay")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_a32hr")
-playerCursor = NodePath("Cursor")
-cam = NodePath("")
+script = ExtResource("1_sx8xq")
+cursor = NodePath("Cursor")
+nameDisplay = NodePath("Cursor/PlayerNameLabel")
 
 [node name="Cursor" type="TextureRect" parent="."]
-auto_translate_mode = 1
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("NoiseTexture2D_rk3js")
+layout_mode = 1
+offset_left = 65.0
+offset_top = 24.0
+offset_right = 117.0
+offset_bottom = 81.0
+texture = ExtResource("2_lowat")
+expand_mode = 1
+
+[node name="PlayerNameLabel" type="RichTextLabel" parent="Cursor"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -105.0
+offset_top = 58.0
+offset_right = 117.0
+offset_bottom = 110.0
+grow_horizontal = 2
+size_flags_vertical = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+bbcode_enabled = true
+text = "[center]Name Placeholder[/center]"

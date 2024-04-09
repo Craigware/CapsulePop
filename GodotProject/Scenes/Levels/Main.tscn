@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://ds1u6m8i2uuqe"]
 
-[ext_resource type="Script" path="res://Scripts/Managers/GameSate.cs" id="1_1kvdc"]
+[ext_resource type="Script" path="res://Scripts/Managers/Client.cs" id="1_y6m5d"]
 [ext_resource type="Script" path="res://Scripts/Controllers/CapsuleSpawner.cs" id="2_wbth3"]
 [ext_resource type="Script" path="res://Scripts/Controllers/UI/FPSCounter.cs" id="3_8sfnp"]
-[ext_resource type="PackedScene" uid="uid://d05alnbm2ydgf" path="res://Scenes/Components/Player.tscn" id="3_h7m4c"]
+[ext_resource type="PackedScene" uid="uid://x8udmw01wt4i" path="res://Scenes/Components/Player.tscn" id="3_sqwvy"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
 
@@ -27,21 +27,19 @@ material = SubResource("StandardMaterial3D_gs2me")
 [sub_resource type="BoxShape3D" id="BoxShape3D_fgqbs"]
 size = Vector3(1, 0.001, 1)
 
-[node name="Node3D" type="Node3D" node_paths=PackedStringArray("PlayersContainer")]
-script = ExtResource("1_1kvdc")
-PlayersContainer = NodePath("Players")
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_y6m5d")
 
 [node name="Players" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="Player" parent="Players" node_paths=PackedStringArray("playerCursor") instance=ExtResource("3_h7m4c")]
+[node name="Player" parent="Players" node_paths=PackedStringArray("cursor", "nameDisplay") instance=ExtResource("3_sqwvy")]
 layout_mode = 1
-playerCursor = NodePath("Cursor")
+cursor = NodePath("Cursor")
+nameDisplay = NodePath("Cursor/PlayerNameLabel")
 
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
@@ -59,11 +57,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_8sfnp")
-
-[node name="Cameras" type="Node" parent="."]
-
-[node name="Camera3D" type="Camera3D" parent="Cameras"]
-transform = Transform3D(1, 0, 0, 0, 0.379472, 0.925203, 0, -0.925203, 0.379472, 0.179302, 6.40715, 3.69795)
 
 [node name="Environment" type="Node" parent="."]
 
@@ -89,3 +82,8 @@ shape = SubResource("BoxShape3D_fgqbs")
 [node name="CapsuleSpawner" type="Node3D" parent="Environment"]
 script = ExtResource("2_wbth3")
 ballSpawnRate = 0.5
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.5714, 0)

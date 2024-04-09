@@ -36,7 +36,7 @@ namespace Player
 
         public int Score = 0;
         public bool StartReady = false;
-        public int PlayerID;
+        public long PlayerID;
 
         public string PlayerName = "Null";
         public Texture2D PlayerIcon;
@@ -44,13 +44,13 @@ namespace Player
         public Color CursorColor { get; set; }
         public Party party = new();
 
-        [Export] public TextureRect playerCursor;
-        [Export] public Camera3D cam;
+        [Export] public Control cursor;
+        [Export] public RichTextLabel nameDisplay;
 
         private Node3D root;
 
         public Player() : this(0, null, "Unnamed") {}
-        public Player(int id, Texture2D playerIcon, string playerName) {
+        public Player(long id, Texture2D playerIcon, string playerName) {
             PlayerID = id;
             PlayerName = playerName;
             PlayerIcon = playerIcon;
@@ -59,12 +59,15 @@ namespace Player
         public override void _Ready() {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
             root = GetTree().Root.GetChild<Node3D>(0);
+            nameDisplay.Text = PlayerID.ToString();
         }
-
+ 
         public override void _Input(InputEvent @event) {
-            if (@event is InputEventMouseMotion e) 
-            {
-                playerCursor.Position = e.Position - playerCursor.Size/2; 
+            if (!IsMultiplayerAuthority()) return;
+
+            if (@event is InputEventMouseMotion e) {
+                cursor.Position = e.Position;
+                
             }
 
             if (Input.IsActionJustPressed("Click")) {
@@ -77,18 +80,7 @@ namespace Player
         }
 
         public void Click(Vector2 mousePosition) {
-            var from = cam.ProjectRayOrigin(mousePosition);
-            var to = from + cam.ProjectRayNormal(mousePosition) * RayLength;
-
-            var spaceState = root.GetWorld3D().DirectSpaceState;
-            var query = PhysicsRayQueryParameters3D.Create(from, to);
-
-            var res = spaceState.IntersectRay(query);
-            if (res.ContainsKey("collider"))
-            {
-                CollisionObject3D collider = (CollisionObject3D) res["collider"];
-                
-            }
+            
         }
     }
 }

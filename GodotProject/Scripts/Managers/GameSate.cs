@@ -1,7 +1,5 @@
 using Critter;
 using Godot;
-using System;
-using System.Linq;
 
 public enum GameStates {
     Start,
@@ -10,7 +8,7 @@ public enum GameStates {
     End
 }
 
-public partial class GameSate : Node3D
+public partial class GameSate : Node 
 {
     [Signal] public delegate void GameStateChangeEventHandler();
 
@@ -24,26 +22,31 @@ public partial class GameSate : Node3D
 
     private int CapsulesPerTB;
     private int CapsulesCollected;
-
+    
     [Export] public Control PlayersContainer;
 
-    public override void _Ready()
-    {
-        ConnectPlayer(123213);
+    private MultiplayerApi multiplayer;
+
+    public override void _Ready() {
+        multiplayer = GetTree().GetMultiplayer();
+        GD.Print("Game state initialized.");
     }
 
-    public void ConnectPlayer(int id) { 
-        // Add a player instance to the scene
-        Player.Player newPlayer = playerScene.Instantiate<Player.Player>();
+    public void ConnectPlayer(long id) {
+        // instantiate new instance of player scene 
+        Rpc(nameof(SpawnPlayer));
+        GD.Print("!!! PLAYER CONNTECTED !!!");
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void SpawnPlayer(long playerID) {
+        var newPlayer = playerScene.Instantiate<Player.Player>();
+        newPlayer.PlayerID = playerID;
         PlayersContainer.AddChild(newPlayer);
-
-        // Get players icon and name
-        JavaScriptBridge.Eval(@"");
-        // set values 
-        players.Add(newPlayer);
     }
 
-    public void DisconnectPlayer(int id) {
+
+    public void DisconnectPlayer(long id) {
         // Remove player from players list
         // some sort of event to notify players someone left
     }
@@ -52,9 +55,11 @@ public partial class GameSate : Node3D
         EmitSignal(SignalName.GameStateChange);
         CurrentState = newState;
     }
-    
+
+    [Rpc()]
     public void StartGame() {
-        if (CurrentState != GameStates.Start) return; 
+        if (!multiplayer.IsServer()) return; 
+        if (CurrentState != GameStates.Start) return;  
         
         int readyPlayers = 0;
         foreach (var player in players) {

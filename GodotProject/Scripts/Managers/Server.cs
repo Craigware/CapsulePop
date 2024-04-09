@@ -13,21 +13,17 @@ namespace Server {
         private GameSate gameSateManager;
 
         public override void _Ready() {
+            gameSateManager = GetNode<GameSate>("/root/GameState");
             multiplayer = GetTree().GetMultiplayer();
+
             var peer = new ENetMultiplayerPeer();
             peer.CreateServer(PORT, MAX_PLAYERS);
             multiplayer.MultiplayerPeer = peer;
-            multiplayer.PeerConnected += PlayerJoin;
 
+            multiplayer.PeerConnected += gameSateManager.ConnectPlayer;
+            multiplayer.PeerDisconnected += gameSateManager.DisconnectPlayer;
+            
             GD.Print("Server Started");
-        }
-
-        public void PlayerJoin(long playerId) {  
-            GD.Print("WAT!");           
-        }
-
-        public void PlayerLeave(long playerId) {
-            PlayerIDs.Remove(playerId);
         } 
     }
 }
