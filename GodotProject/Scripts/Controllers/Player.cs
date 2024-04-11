@@ -1,5 +1,6 @@
 using Godot;
 using Critter;
+using System.Windows.Markup;
 
 namespace Player
 {
@@ -36,12 +37,15 @@ namespace Player
 
         public int Score = 0;
         public bool StartReady = false;
-        public long PlayerID;
+        public long PlayerID = 1;
 
         public string PlayerName = "Null";
         public Texture2D PlayerIcon;
 
-        public Color CursorColor { get; set; }
+        public Color CursorColor {
+            get { return cursor.Modulate; }
+            set { cursor.Modulate = value; }  
+        }
         public Party party = new();
 
         [Export] public Control cursor;
@@ -49,7 +53,7 @@ namespace Player
 
         private Node3D root;
 
-        public Player() : this(0, null, "Unnamed") {}
+        public Player() : this(1, null, "Unnamed") {}
         public Player(long id, Texture2D playerIcon, string playerName) {
             PlayerID = id;
             PlayerName = playerName;
@@ -62,12 +66,10 @@ namespace Player
             nameDisplay.Text = PlayerID.ToString();
         }
  
-        public override void _Input(InputEvent @event) {
-            if (!IsMultiplayerAuthority()) return;
-
+        public override void _Input(InputEvent @event) { 
+            if (GetTree().GetMultiplayer().GetUniqueId() != PlayerID) return;
             if (@event is InputEventMouseMotion e) {
-                cursor.Position = e.Position;
-                
+                Rpc(nameof(UpdateCursorPosition), e.Position);
             }
 
             if (Input.IsActionJustPressed("Click")) {
@@ -77,6 +79,11 @@ namespace Player
             if (Input.IsActionJustPressed("Escape")) {
                 GetTree().Quit();
             }
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void UpdateCursorPosition(Vector2 newPos) {
+            cursor.Position = newPos;
         }
 
         public void Click(Vector2 mousePosition) {

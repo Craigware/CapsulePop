@@ -1,3 +1,4 @@
+using System;
 using Critter;
 using Godot;
 
@@ -23,32 +24,43 @@ public partial class GameSate : Node
     private int CapsulesPerTB;
     private int CapsulesCollected;
     
-    [Export] public Control PlayersContainer;
+    public Control PlayersContainer;
 
     private MultiplayerApi multiplayer;
 
     public override void _Ready() {
         multiplayer = GetTree().GetMultiplayer();
         GD.Print("Game state initialized.");
+        PlayersContainer = GetNode<Control>("/root/Node3D/Players");
     }
 
     public void ConnectPlayer(long id) {
-        // instantiate new instance of player scene 
-        Rpc(nameof(SpawnPlayer));
+        Rpc(nameof(SpawnPlayer), id);
         GD.Print("!!! PLAYER CONNTECTED !!!");
     }
+    
+    public void DisconnectPlayer(long id) {
+        Rpc(nameof(FreePlayer), id);
+        GD.Print("!!! PLAYER DISCONNECTED !!!");
+    }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void SpawnPlayer(long playerID) {
         var newPlayer = playerScene.Instantiate<Player.Player>();
         newPlayer.PlayerID = playerID;
+        newPlayer.Name = playerID.ToString();
         PlayersContainer.AddChild(newPlayer);
+
+        players.Add(newPlayer);
+        GD.Print("New player spawned");
     }
 
-
-    public void DisconnectPlayer(long id) {
-        // Remove player from players list
-        // some sort of event to notify players someone left
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void FreePlayer(long id) {
+        var player = PlayersContainer.GetNode<Player.Player>(id.ToString());
+        GD.Print(player);
+        players.Remove(player);
+        player.QueueFree();
     }
 
     public void SwitchState(GameStates newState) {
@@ -56,9 +68,8 @@ public partial class GameSate : Node
         CurrentState = newState;
     }
 
-    [Rpc()]
-    public void StartGame() {
-        if (!multiplayer.IsServer()) return; 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void StartGame() {  
         if (CurrentState != GameStates.Start) return;  
         
         int readyPlayers = 0;
@@ -72,8 +83,8 @@ public partial class GameSate : Node
         }
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartTeamBuilding() {
-        // Reset Teambuilding
         CapsulesCollected = 0;
         // spawn ball spawner
         
@@ -86,21 +97,21 @@ public partial class GameSate : Node
         // give to the player
 
         CapsulesCollected++;
-        if (CapsulesCollected == CapsulesPerTB) 
-        {
-            EndTeamBuilding();
-        }            
+        if (CapsulesCollected == CapsulesPerTB) EndTeamBuilding(); 
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void EndTeamBuilding() {
        // await animation or timing
        SwitchState(GameStates.Battle); 
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartBattle() {
 
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void EndBattle() {
  
     }
@@ -108,16 +119,15 @@ public partial class GameSate : Node
     public void CheckWincon() {
         foreach (var player in players) {
             if (player.Score == ScoreToWin) {
-                Victory(player);
+                EndGame(player);
                 return;
             }
         }
     }
 
-    public void Victory(Player.Player player) {
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void EndGame(Player.Player player) {
         SwitchState(GameStates.End);
-       // await animation
-
         SwitchState(GameStates.Start); 
     }
 }

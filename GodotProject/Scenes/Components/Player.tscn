@@ -1,13 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://x8udmw01wt4i"]
+[gd_scene load_steps=4 format=3 uid="uid://x8udmw01wt4i"]
 
 [ext_resource type="Script" path="res://Scripts/Controllers/Player.cs" id="1_sx8xq"]
 [ext_resource type="Texture2D" uid="uid://da1ly7hqu10df" path="res://Assets/Images/Cursor.svg" id="2_lowat"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ki5u5"]
+properties/0/path = NodePath("Cursor:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [node name="Player" type="Control" node_paths=PackedStringArray("cursor", "nameDisplay")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -10.0
+offset_top = -22.0
+offset_right = -10.0
+offset_bottom = -22.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sx8xq")
@@ -37,3 +46,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 bbcode_enabled = true
 text = "[center]Name Placeholder[/center]"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ki5u5")
