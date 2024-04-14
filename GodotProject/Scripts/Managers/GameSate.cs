@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading;
 using Critter;
 using Godot;
+using Microsoft.VisualBasic;
 
 public enum GameStates {
     Start,
@@ -9,7 +13,7 @@ public enum GameStates {
     End
 }
 
-public partial class GameSate : Node 
+public partial class GameSate : Node3D
 {
     [Signal] public delegate void GameStateChangeEventHandler();
 
@@ -32,16 +36,55 @@ public partial class GameSate : Node
         multiplayer = GetTree().GetMultiplayer();
         GD.Print("Game state initialized.");
         PlayersContainer = GetNode<Control>("/root/Node3D/Players");
+        Button startButton = GetNode<Button>("/root/Node3D/Debug/Button4");
+
+        startButton.ButtonDown += () => { Rpc(nameof(StartGame)); };    
     }
+
+    public Godot.Collections.Dictionary<string, Variant> ToDict(){
+        Godot.Collections.Dictionary<string, Variant> gameState = new();
+        Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>> _players = new();
+        
+        foreach (var player in players) {
+           _players.Add(player.ToDict());
+        }
+
+        gameState["CurrentState"] = (int) CurrentState;
+        gameState["players"] = _players;
+        gameState["CapsulesCollected"] = CapsulesCollected;
+
+        return gameState;
+    } 
 
     public void ConnectPlayer(long id) {
         Rpc(nameof(SpawnPlayer), id);
-        GD.Print("!!! PLAYER CONNTECTED !!!");
+
+        var args = ToDict();
+        RpcId(id, nameof(SyncGamestate), args);
+        GD.Print("!!! PLAYER CONNTECTED !!!" + id);
     }
-    
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void SyncGamestate(Godot.Collections.Dictionary<string, Variant> gameState) {  
+        var _players = gameState["players"].As<Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>>(); 
+
+        //* Spawn the existing players
+        for (int i = 0; i < _players.Count - 1; i++) {
+            var player = playerScene.Instantiate<Player.Player>();
+            player.Name = _players[i]["PlayerID"].As<long>().ToString(); 
+            player.PlayerID = _players[i]["PlayerID"].As<long>();
+            
+            PlayersContainer.AddChild(player);
+            player.cursor.Position = _players[i]["CursorPosition"].As<Vector2>();
+        }
+
+        CurrentState = gameState["CurrentState"].As<GameStates>();
+        CapsulesCollected = gameState["CapsulesCollected"].As<int>();
+    }
+
     public void DisconnectPlayer(long id) {
         Rpc(nameof(FreePlayer), id);
-        GD.Print("!!! PLAYER DISCONNECTED !!!");
+        GD.Print("!!! PLAYER DISCONNECTED !!! " + id);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
@@ -49,16 +92,18 @@ public partial class GameSate : Node
         var newPlayer = playerScene.Instantiate<Player.Player>();
         newPlayer.PlayerID = playerID;
         newPlayer.Name = playerID.ToString();
+        GD.Print(GetTree().GetMultiplayer().GetUniqueId());        
+        
         PlayersContainer.AddChild(newPlayer);
-
-        players.Add(newPlayer);
-        GD.Print("New player spawned");
+        players.Add(newPlayer);        
+        GD.Print("New player spawned " + playerID);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void FreePlayer(long id) {
         var player = PlayersContainer.GetNode<Player.Player>(id.ToString());
-        GD.Print(player);
+
+        GD.Print("Player Freed " + id); 
         players.Remove(player);
         player.QueueFree();
     }
@@ -70,17 +115,9 @@ public partial class GameSate : Node
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartGame() {  
-        if (CurrentState != GameStates.Start) return;  
-        
-        int readyPlayers = 0;
-        foreach (var player in players) {
-            if (player.StartReady == true) readyPlayers++; 
-        }
+        GD.Print(players);
 
-        if (readyPlayers == players.Count) {
-           // Start the game
-           SwitchState(GameStates.TeamBuilding); 
-        }
+        GD.Print(GetTree().GetMultiplayer().GetUniqueId());
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]

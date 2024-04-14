@@ -17,7 +17,7 @@ namespace Player
             }
 
             return false;
-        }
+        } 
 
         public int Count() {
             int count = 0;
@@ -39,7 +39,17 @@ namespace Player
         public bool StartReady = false;
         public long PlayerID = 1;
 
-        public string PlayerName = "Null";
+        [Export] public RichTextLabel nameDisplay;
+        
+        private string playerName;
+        public string PlayerName {
+            get { return playerName; }
+            set {
+                playerName = value;     
+                nameDisplay.Text = "[center]" + PlayerName.ToString() + "[/center]";
+            }
+        }
+
         public Texture2D PlayerIcon;
 
         public Color CursorColor {
@@ -49,23 +59,36 @@ namespace Player
         public Party party = new();
 
         [Export] public Control cursor;
-        [Export] public RichTextLabel nameDisplay;
+        
 
         private Node3D root;
 
-        public Player() : this(1, null, "Unnamed") {}
-        public Player(long id, Texture2D playerIcon, string playerName) {
-            PlayerID = id;
-            PlayerName = playerName;
-            PlayerIcon = playerIcon;
+        public Godot.Collections.Dictionary<string, Variant> ToDict(){
+            Godot.Collections.Dictionary<string, Variant> player = new();
+            
+            player["PlayerName"] = PlayerName;
+            player["PlayerIcon"] = PlayerIcon;
+            player["PlayerID"] = PlayerID;
+            player["Score"] = Score;
+            player["StartReady"] = StartReady;
+            player["CursorPosition"] = cursor.Position;
+            player["CrsorColor"] = CursorColor;
+
+            //Party will also have to be here eventually when created are made.
+
+            return player;
         }
 
         public override void _Ready() {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
-            root = GetTree().Root.GetChild<Node3D>(0);
-            nameDisplay.Text = PlayerID.ToString();
+            root = GetTree().Root.GetChild<Node3D>(0);            
+            Button readyButton = GetNode<Button>("/root/Node3D/Debug/Button3");
+
+            nameDisplay.Text = "[center]" + PlayerID.ToString() + "[/center]";
+            readyButton.ButtonDown += () => { Rpc(nameof(ToggleReady)); };
         }
- 
+
+
         public override void _Input(InputEvent @event) { 
             if (GetTree().GetMultiplayer().GetUniqueId() != PlayerID) return;
             if (@event is InputEventMouseMotion e) {
@@ -84,10 +107,17 @@ namespace Player
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void UpdateCursorPosition(Vector2 newPos) {
             cursor.Position = newPos;
+            
         }
 
         public void Click(Vector2 mousePosition) {
             
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void ToggleReady() {
+            StartReady = !StartReady;
+            GD.Print("ready");
         }
     }
 }

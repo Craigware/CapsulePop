@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://ds1u6m8i2uuqe"]
+[gd_scene load_steps=9 format=3 uid="uid://ds1u6m8i2uuqe"]
 
 [ext_resource type="Script" path="res://Scripts/Tests/DebugTest.cs" id="2_y51dj"]
 [ext_resource type="Script" path="res://Scripts/Controllers/UI/FPSCounter.cs" id="3_8sfnp"]
-[ext_resource type="PackedScene" uid="uid://x8udmw01wt4i" path="res://Scenes/Components/Player.tscn" id="3_sqwvy"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5gb8b"]
 
@@ -35,11 +34,6 @@ offset_left = 1.0
 offset_right = 41.0
 offset_bottom = 40.0
 
-[node name="Player" parent="Players" node_paths=PackedStringArray("cursor", "nameDisplay") instance=ExtResource("3_sqwvy")]
-layout_mode = 1
-cursor = NodePath("Cursor")
-nameDisplay = NodePath("Cursor/PlayerNameLabel")
-
 [node name="Debug" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
@@ -54,6 +48,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -21.0
+offset_right = -21.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_8sfnp")
@@ -86,6 +82,22 @@ text = "[center]GameState[/center]
 
 "
 
+[node name="Button3" type="Button" parent="Debug"]
+layout_mode = 0
+offset_left = 533.0
+offset_top = 461.0
+offset_right = 685.0
+offset_bottom = 545.0
+text = "Ready"
+
+[node name="Button4" type="Button" parent="Debug"]
+layout_mode = 0
+offset_left = 259.0
+offset_top = 432.0
+offset_right = 440.0
+offset_bottom = 547.0
+text = "START GAME"
+
 [node name="Environment" type="Node" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
@@ -109,11 +121,6 @@ shape = SubResource("BoxShape3D_fgqbs")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.5714, 0)
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/Components/Player.tscn")
-spawn_path = NodePath("../Players")
-spawn_limit = 4
 
 [connection signal="button_down" from="Debug/Button" to="Debug" method="join"]
 [connection signal="button_down" from="Debug/Button2" to="Debug" method="host"]
