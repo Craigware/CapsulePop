@@ -85,7 +85,10 @@ namespace Player
             Button readyButton = GetNode<Button>("/root/Node3D/Debug/Button3");
 
             nameDisplay.Text = "[center]" + PlayerID.ToString() + "[/center]";
-            readyButton.ButtonDown += () => { Rpc(nameof(ToggleReady)); };
+            
+            if (GetTree().GetMultiplayer().GetUniqueId() == PlayerID) {
+                readyButton.ButtonDown += () => { Rpc(nameof(ToggleReady)); };
+            }
         }
 
 
@@ -114,10 +117,17 @@ namespace Player
             
         }
 
+        public void Grab() {
+
+        }
+
+        public void Smack() {
+            
+        } 
+
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void ToggleReady() {
             StartReady = !StartReady;
-            GD.Print("ready");
         }
     }
 }

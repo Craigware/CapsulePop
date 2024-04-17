@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Drawing;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Critter 
 {
@@ -10,28 +12,55 @@ namespace Critter
         int spawnedAmount = 0;
         PackedScene capsuleScene = GD.Load<PackedScene>("res://Scenes/Components/Capsule.tscn");
 
+        Node3D CapsuleContainer;
+
+
         Timer timer = new() 
         {
             Autostart=true
         };
 
-        public override void _Ready() {
-            timer.WaitTime = ballSpawnRate;
-            AddChild(timer);
-            timer.Timeout += SpawnCapsule;
+        public CapsuleSpawner() : this(new Node3D(), 0.25f, 12) {}
+        public CapsuleSpawner(Node3D capsuleContainer, float spawnRate, int limit) {
+            CapsuleContainer = capsuleContainer;
+            spawnLimit = limit;
+            ballSpawnRate = spawnRate;
+
+            if (!CapsuleContainer.IsInsideTree()) {
+                GetTree().Root.GetChild(0).AddChild(CapsuleContainer);
+            }
         }
 
-        public void SpawnCapsule() {
-            if (spawnedAmount >= spawnLimit-1) {
-                timer.Paused = true;
-            }
+        public override void _Ready() {
+            if (!GetTree().GetMultiplayer().IsServer()) return;
+            timer.WaitTime = ballSpawnRate;
+            AddChild(timer);
+            timer.Timeout += () => {
+                if (spawnedAmount >= spawnLimit-1) {
+                    timer.Paused = true;
+                }
 
+                var args = new Variant[2] {
+                    new Vector3(0,100,0),
+                    new Vector3(0,0,0),
+                };
+
+                Rpc(nameof(SpawnCapsule), args);
+            };
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+        public void SpawnCapsule(Vector3 force, Vector3 point) {
             Capsule capsule = capsuleScene.Instantiate<Capsule>();
             Element element = (Element) new Random().Next(0,5);
-            GD.Print(element);
+            
             capsule.element = element;
-            GetTree().Root.AddChild(capsule);
+            capsule.Name = $"Capsule {spawnedAmount}";
+
+            CapsuleContainer.AddChild(capsule);
             capsule.GlobalPosition = new Vector3(0,0,0);
+             
+            capsule.Push(force, point);
             spawnedAmount++;
         }
     }

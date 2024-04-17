@@ -1,10 +1,8 @@
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading;
 using Critter;
 using Godot;
-using Microsoft.VisualBasic;
+
 
 public enum GameStates {
     Start,
@@ -29,16 +27,21 @@ public partial class GameSate : Node3D
     private int CapsulesCollected;
     
     public Control PlayersContainer;
+    public Node3D CapsulesContainer;
 
     private MultiplayerApi multiplayer;
 
     public override void _Ready() {
         multiplayer = GetTree().GetMultiplayer();
         GD.Print("Game state initialized.");
+
         PlayersContainer = GetNode<Control>("/root/Node3D/Players");
+        CapsulesContainer = GetNode<Node3D>("/root/Node3D/Capsules");
         Button startButton = GetNode<Button>("/root/Node3D/Debug/Button4");
 
-        startButton.ButtonDown += () => { Rpc(nameof(StartGame)); };    
+        GD.Print(CapsulesContainer);
+
+        startButton.ButtonDown += StartGame;   
     }
 
     public Godot.Collections.Dictionary<string, Variant> ToDict(){
@@ -95,7 +98,7 @@ public partial class GameSate : Node3D
         GD.Print(GetTree().GetMultiplayer().GetUniqueId());        
         
         PlayersContainer.AddChild(newPlayer);
-        players.Add(newPlayer);        
+        players.Add(newPlayer); 
         GD.Print("New player spawned " + playerID);
     }
 
@@ -108,25 +111,48 @@ public partial class GameSate : Node3D
         player.QueueFree();
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void SwitchState(GameStates newState) {
         EmitSignal(SignalName.GameStateChange);
         CurrentState = newState;
+        GD.Print("Gamestate swapped: " + CurrentState);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void StartGame() {  
-        GD.Print(players);
-
-        GD.Print(GetTree().GetMultiplayer().GetUniqueId());
+    public void StartGame() {
+        if (CurrentState != GameStates.Start) return;
+        if (!GetTree().GetMultiplayer().IsServer()) return; 
+        
+        int readyCount = 0;
+        foreach (var p in players) {
+            if (p.StartReady) readyCount++;
+        }
+        GD.Print(players.Count, readyCount);
+        if (readyCount != players.Count) {
+            GD.Print("readyCount does not equal player count.");
+            return;
+        }
+    
+        GD.Print("===== Starting game =====");
+        Rpc(nameof(SwitchState), (int) GameStates.TeamBuilding);
+        Rpc(nameof(StartTeamBuilding));
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartTeamBuilding() {
+        GD.Print("===== Teambuilding Started =====");
         CapsulesCollected = 0;
-        // spawn ball spawner
-        
-        // listen to signal that all balls have been collected
-        // signal += CapsuleCollected;
+
+        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 0.25f, 12);
+        {
+            Name = "CapsuleSpawner";
+        }
+
+        foreach (var player in players) {
+            var collectionZone = new CollectionZone(player);
+            GetTree().Root.GetChild(0).AddChild(collectionZone); 
+        }
+
+        GetTree().Root.GetChild(0).AddChild(capsuleSpawner);
     }
 
     public void CapsuleCollected(Player.Player player, Capsule capsule) {
@@ -137,18 +163,15 @@ public partial class GameSate : Node3D
         if (CapsulesCollected == CapsulesPerTB) EndTeamBuilding(); 
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void EndTeamBuilding() {
        // await animation or timing
        SwitchState(GameStates.Battle); 
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartBattle() {
 
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void EndBattle() {
  
     }
@@ -162,7 +185,6 @@ public partial class GameSate : Node3D
         }
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void EndGame(Player.Player player) {
         SwitchState(GameStates.End);
         SwitchState(GameStates.Start); 

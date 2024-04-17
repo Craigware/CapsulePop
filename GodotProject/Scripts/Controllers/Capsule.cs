@@ -12,8 +12,7 @@ namespace Critter
 
         PackedScene cap = GD.Load<PackedScene>("res://Scenes/Components/Capsule.tscn");
 
-        private static readonly Dictionary<Element, Color> elementColorPairs = new()
-        {
+        private static readonly Dictionary<Element, Color> elementColorPairs = new() {
             {Element.FIRE, new Color("#ca6f42")},
             {Element.WATER, new Color("889cc5")},
             {Element.GRASS, new Color("#1f9343")},
@@ -21,21 +20,21 @@ namespace Critter
             {Element.GHOST, new Color("#6f5475")}
         };
 
-        public override void _Ready() {
-            material = new() {
-                AlbedoColor = elementColorPairs[this.element]
-            };
-            GD.Print(elementColorPairs[this.element]);
-
-            float initXForce = new Random().Next(-50,50);
-            float initZForce = new Random().Next(-50,50);
-            initXForce /= 100;
-            initZForce /= 100;
-
-            Vector3 initialForce = new(initXForce,1.25f,initZForce);
-            ApplyForce(initialForce*100*5);
-
-            GetChild<MeshInstance3D>(0).MaterialOverride = material;
+        [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+        public void Push(Vector3 force, Vector3? forcePoint=null) {
+            ApplyForce(force, forcePoint);
         }
-    }
+
+
+        public override void _PhysicsProcess(double delta) {            
+            if (GetTree().GetMultiplayer().IsServer()) {
+                Rpc(nameof(UpdatePosition), Position);
+            }
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+        public void UpdatePosition(Vector3 updatedPosition) {
+            Position = updatedPosition;
+        }
+    }  
 }
