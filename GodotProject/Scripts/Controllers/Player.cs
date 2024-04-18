@@ -59,7 +59,8 @@ namespace Player
         public Party party = new();
 
         [Export] public Control cursor;
-        
+
+        Capsule grabbed = null;
 
         private Node3D root;
 
@@ -81,7 +82,7 @@ namespace Player
 
         public override void _Ready() {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
-            root = GetTree().Root.GetChild<Node3D>(0);            
+            root = GetTree().Root.GetChild<Node3D>(1);            
             Button readyButton = GetNode<Button>("/root/Node3D/Debug/Button3");
 
             nameDisplay.Text = "[center]" + PlayerID.ToString() + "[/center]";
@@ -98,8 +99,16 @@ namespace Player
                 Rpc(nameof(UpdateCursorPosition), e.Position);
             }
 
-            if (Input.IsActionJustPressed("Click")) {
-                Click(GetViewport().GetMousePosition());
+            if (Input.IsActionJustPressed("Select")) {
+
+            }
+
+            if (Input.IsActionJustPressed("Grab")) {
+                Grab(GetViewport().GetMousePosition());
+            }
+
+            if (Input.IsActionJustReleased("Grab")) {
+                Release();
             }
 
             if (Input.IsActionJustPressed("Escape")) {
@@ -107,27 +116,85 @@ namespace Player
             }
         }
 
+
+
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void UpdateCursorPosition(Vector2 newPos) {
-            cursor.Position = newPos;
-            
+            cursor.Position = newPos;            
         }
 
-        public void Click(Vector2 mousePosition) {
-            
+        public void Release() {
+            GD.Print("Released");
+            grabbed?.SetGrabbed(PlayerID);
+            grabbed = null;
         }
 
-        public void Grab() {
+        public void Grab(Vector2 mousePosition) {
+            var target = CreateRayCast(mousePosition, 1000);
+            
+            try {
+                Capsule capsule = (Capsule) target;
+                if (capsule.IsGrabbed) return;
+                capsule.SetGrabbed(PlayerID);
+                grabbed = capsule; 
+            }
+            catch { 
 
+            }   
+
+       }
+
+        //! there is a bug here that makes the cursor not pick up the
+        //! capsule correctly, doesn't throw, doesnt happen a majority of the time
+        //! confusion seems to happen when you grab stacked balls? has to do with velocity and force
+        
+        //* fixed by using impulse instead of force
+        //! nvm 
+
+        //* it is based on viewport positions what in gods naem why
+        //* if multiple clients are open on the same computer in different locations ti
+        //* acts weird
+
+        //* dk if this will matter on multiple computers, need to test
+        public Vector3 MousePositionToWorldSpace(int d) {
+            Vector2 mousePosition = GetViewport().GetMousePosition(); 
+            GD.Print(GetTree().GetMultiplayer().GetUniqueId(), d);
+
+            var camera = GetViewport().GetCamera3D();
+            var from = camera.ProjectRayOrigin(mousePosition);
+            var to = from + camera.ProjectRayNormal(mousePosition) * d;
+
+            GD.Print(from, camera.ProjectRayNormal(mousePosition), d);
+            GD.Print(GetViewport().GetWindow().Size);
+            return from;
         }
 
-        public void Smack() {
-            
+        public void Smack(Vector2 mousePosition) {
+            // This is going to check an area 
+
         } 
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void ToggleReady() {
             StartReady = !StartReady;
+        }
+
+        public Variant? CreateRayCast(Vector2 mousePosition, int rayLen) {
+            var worldSpace = GetTree().Root.GetChild<Node3D>(1).GetWorld3D().DirectSpaceState;
+            
+            var camera = GetViewport().GetCamera3D();
+            var from = camera.ProjectRayOrigin(mousePosition);
+            var to = from + camera.ProjectRayNormal(mousePosition) * rayLen;
+
+            var query = PhysicsRayQueryParameters3D.Create(from, to);
+
+            var res = worldSpace.IntersectRay(query);
+            
+            if (res.ContainsKey("collider")) {
+                return res["collider"];
+            }
+
+            return null;
         }
     }
 }

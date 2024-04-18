@@ -20,14 +20,14 @@ namespace Critter
             Autostart=true
         };
 
-        public CapsuleSpawner() : this(new Node3D(), 0.25f, 12) {}
+        public CapsuleSpawner() : this(new Node3D(){Name="CapsuleContainer"}, 0.25f, 12) {}
         public CapsuleSpawner(Node3D capsuleContainer, float spawnRate, int limit) {
             CapsuleContainer = capsuleContainer;
             spawnLimit = limit;
             ballSpawnRate = spawnRate;
 
             if (!CapsuleContainer.IsInsideTree()) {
-                GetTree().Root.GetChild(0).AddChild(CapsuleContainer);
+                GetTree().Root.GetChild(1).AddChild(CapsuleContainer);
             }
         }
 
@@ -40,8 +40,10 @@ namespace Critter
                     timer.Paused = true;
                 }
 
+                int rX = new Random().Next(-100, 100);
+
                 var args = new Variant[2] {
-                    new Vector3(0,100,0),
+                    new Vector3(0,1,0),
                     new Vector3(0,0,0),
                 };
 
@@ -58,7 +60,7 @@ namespace Critter
             capsule.Name = $"Capsule {spawnedAmount}";
 
             CapsuleContainer.AddChild(capsule);
-            capsule.GlobalPosition = new Vector3(0,0,0);
+            
              
             capsule.Push(force, point);
             spawnedAmount++;

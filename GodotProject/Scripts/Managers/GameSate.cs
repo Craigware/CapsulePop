@@ -142,17 +142,12 @@ public partial class GameSate : Node3D
         GD.Print("===== Teambuilding Started =====");
         CapsulesCollected = 0;
 
-        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 0.25f, 12);
+        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, 12);
         {
             Name = "CapsuleSpawner";
         }
 
-        foreach (var player in players) {
-            var collectionZone = new CollectionZone(player);
-            GetTree().Root.GetChild(0).AddChild(collectionZone); 
-        }
-
-        GetTree().Root.GetChild(0).AddChild(capsuleSpawner);
+        GetTree().Root.GetChild(1).AddChild(capsuleSpawner);
     }
 
     public void CapsuleCollected(Player.Player player, Capsule capsule) {

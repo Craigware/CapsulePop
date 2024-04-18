@@ -7,6 +7,7 @@ public partial class CollectionZone : Area3D
     Player.Player associatedPlayer;
     float timeToCollect = 1f;
 
+    public CollectionZone() : this(null) {}
     public CollectionZone(Player.Player player) {
         associatedPlayer = player;
     } 
