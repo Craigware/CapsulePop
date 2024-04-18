@@ -60,6 +60,7 @@ No current available way to play, please check back in the future.
 ---
 
 # Out of scope ideas to implement out of time constraint
-
-- [] Touch controls
-- [] Powerups
+- [ ] Touch controls
+- [ ] Powerups
+- [ ] Static Webpage
+- [ ] Player Teaming
