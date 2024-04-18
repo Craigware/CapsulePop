@@ -58,3 +58,8 @@ Only a mouse is required to interact with the game. Players may opt to use keybo
 No current available way to play, please check back in the future.
 
 ---
+
+# Out of scope ideas to implement out of time constraint
+
+- [] Touch controls
+- [] Powerups
