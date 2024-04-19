@@ -21,18 +21,20 @@ namespace Critter
             {Element.ELECTRIC, new Color("#c3f246")},
             {Element.GHOST, new Color("#6f5475")}
         };
-
-        [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-        public void Push(Vector3 force, Vector3? forcePoint=null) {
-            ApplyImpulse(force, forcePoint);
+ 
+        public void Fling(Vector3 velocity) {
+            Rpc(nameof(Push), velocity);
         }
-
+ 
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void Push(Vector3 force) {
+            if (!GetTree().GetMultiplayer().IsServer()) return;
+            ApplyImpulse(force);
+        }
 
         public override void _PhysicsProcess(double delta) {
             if (IsGrabbed && GetTree().GetMultiplayer().IsServer()) {
-                GD.Print(Position);
-                Position = Grabber.MousePositionToWorldSpace(1);
-                GD.Print(Position);
+                Position = Grabber.MousePositionToWorldSpace(4);
             }
 
             if (GetTree().GetMultiplayer().IsServer()) {
@@ -41,9 +43,9 @@ namespace Critter
         }
 
 
-        public void SetGrabbed(long grabberId) { 
-            if (!IsGrabbed) {
-                Rpc(nameof(Grabbed), grabberId);
+        public void SetGrabbed(long? grabberId=null) { 
+            if (grabberId != null && !IsGrabbed) {
+                Rpc(nameof(Grabbed), (long) grabberId);
             } else {
                 Rpc(nameof(Released));
             } 

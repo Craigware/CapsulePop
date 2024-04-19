@@ -38,6 +38,7 @@ namespace Player
         public int Score = 0;
         public bool StartReady = false;
         public long PlayerID = 1;
+        public bool Stunned = false;
 
         [Export] public RichTextLabel nameDisplay;
         
@@ -62,6 +63,9 @@ namespace Player
 
         Capsule grabbed = null;
 
+
+        Vector2 relative = Vector2.Zero;
+        Vector2 velocity = Vector2.Zero;
         private Node3D root;
 
         public Godot.Collections.Dictionary<string, Variant> ToDict(){
@@ -90,42 +94,64 @@ namespace Player
             if (GetTree().GetMultiplayer().GetUniqueId() == PlayerID) {
                 readyButton.ButtonDown += () => { Rpc(nameof(ToggleReady)); };
             }
+
+            Input.UseAccumulatedInput = true;
         }
 
 
         public override void _Input(InputEvent @event) { 
-            if (GetTree().GetMultiplayer().GetUniqueId() != PlayerID) return;
-            if (@event is InputEventMouseMotion e) {
-                Rpc(nameof(UpdateCursorPosition), e.Position);
-            }
-
-            if (Input.IsActionJustPressed("Select")) {
-
-            }
-
+            if (GetTree().GetMultiplayer().GetUniqueId() != PlayerID) return; 
+            if (Stunned) return;
+               
+            //? Grab
             if (Input.IsActionJustPressed("Grab")) {
                 Grab(GetViewport().GetMousePosition());
             }
-
-            if (Input.IsActionJustReleased("Grab")) {
-                Release();
+ 
+            if (@event is InputEventMouseMotion e) {
+                Rpc(nameof(UpdateCursorPosition), e.Position);
+                relative = e.Relative;
+                velocity = e.Velocity;
             }
 
+            // ?Fling
+            if (Input.IsActionJustReleased("Grab")) {              
+                Fling(relative, velocity);
+            }
+
+            //? Smack
+            if (Input.IsActionJustPressed("Select")) {
+                Smack(GetViewport().GetMousePosition());
+            }
+    
             if (Input.IsActionJustPressed("Escape")) {
                 GetTree().Quit();
             }
         }
 
-
+        public override void _Process(double delta) {
+            if (Input.IsActionJustReleased("Grab")) {
+                Fling(relative, velocity);
+            }
+        }
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void UpdateCursorPosition(Vector2 newPos) {
             cursor.Position = newPos;            
         }
 
-        public void Release() {
-            GD.Print("Released");
-            grabbed?.SetGrabbed(PlayerID);
+        public void Fling(Vector2 relativePosition, Vector2 mouseVelocity) {
+            if (grabbed == null) return;
+
+            grabbed.SetGrabbed();
+
+            Vector3 force = new(
+                Mathf.Clamp(relativePosition.X/10, -1, 1) * 10,
+                0,
+                Mathf.Clamp(relativePosition.Y/10, -1, 1) * 10
+            );
+
+            grabbed.Fling(force);
             grabbed = null;
         }
 
@@ -136,13 +162,14 @@ namespace Player
                 Capsule capsule = (Capsule) target;
                 if (capsule.IsGrabbed) return;
                 capsule.SetGrabbed(PlayerID);
-                grabbed = capsule; 
+                grabbed = capsule;
+                GD.Print(grabbed);
             }
             catch { 
 
             }   
 
-       }
+        }
 
         //! there is a bug here that makes the cursor not pick up the
         //! capsule correctly, doesn't throw, doesnt happen a majority of the time
@@ -158,21 +185,46 @@ namespace Player
         //* dk if this will matter on multiple computers, need to test
         public Vector3 MousePositionToWorldSpace(int d) {
             Vector2 mousePosition = GetViewport().GetMousePosition(); 
-            GD.Print(GetTree().GetMultiplayer().GetUniqueId(), d);
 
             var camera = GetViewport().GetCamera3D();
             var from = camera.ProjectRayOrigin(mousePosition);
             var to = from + camera.ProjectRayNormal(mousePosition) * d;
-
-            GD.Print(from, camera.ProjectRayNormal(mousePosition), d);
-            GD.Print(GetViewport().GetWindow().Size);
-            return from;
+ 
+            return to;
         }
 
         public void Smack(Vector2 mousePosition) {
-            // This is going to check an area 
+            // This is going to check an area ccca
 
+            var smackRegion = GetNode<Area2D>("Cursor/Area2D");
+            var smackedAreas = smackRegion.GetOverlappingAreas();
+            if ( smackedAreas.Count == 0 ) return;
+
+            foreach (var area in smackedAreas) {
+                var smackedPlayer = area.GetParent().GetParent<Player>();
+                GD.Print(smackedPlayer.PlayerID, " Smacked.");
+                smackedPlayer.SetStunned(1000);
+            }
+            
         } 
+
+
+        public void SetStunned(int duration=1000) {
+            if (!Stunned) {
+                Rpc(nameof(Stun), duration);
+            }
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void Stun(int duration) {
+            Stunned = true;
+            //! Need to add the timer still
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void Unstun() {
+            Stunned = false;
+        }
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void ToggleReady() {

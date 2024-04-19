@@ -9,6 +9,7 @@ namespace Critter
     {
         [Export(PropertyHint.Range, "0,10")] float ballSpawnRate = 0.25f;
         [Export] int spawnLimit = 12;
+        int ballSpawnForce = 1;
         int spawnedAmount = 0;
         PackedScene capsuleScene = GD.Load<PackedScene>("res://Scenes/Components/Capsule.tscn");
 
@@ -40,10 +41,11 @@ namespace Critter
                     timer.Paused = true;
                 }
 
-                int rX = new Random().Next(-100, 100);
+                int rX = new Random().Next(-1, 1) * ballSpawnForce;
+                int rY = new Random().Next(-1, 1) * ballSpawnForce;
 
                 var args = new Variant[2] {
-                    new Vector3(0,1,0),
+                    new Vector3(rX,1,rY),
                     new Vector3(0,0,0),
                 };
 
@@ -62,7 +64,7 @@ namespace Critter
             CapsuleContainer.AddChild(capsule);
             
              
-            capsule.Push(force, point);
+            capsule.Push(force);
             spawnedAmount++;
         }
     }

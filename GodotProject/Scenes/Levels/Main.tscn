@@ -131,13 +131,13 @@ mesh = SubResource("PlaneMesh_t2me2")
 shape = SubResource("BoxShape3D_fgqbs")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.331437, 0.943478, 0, -0.943478, 0.331437, -0.09, 4.84756, 2.78205)
+transform = Transform3D(1, 0, 0, 0, 0.331437, 0.943477, 0, -0.943477, 0.331437, -0.09, 7.05062, 3.48237)
 projection = 1
 size = 10.0
 far = 4010.05
 
 [node name="CollectionZone" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.9282, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.85158, -1.9282, -3.69178)
 script = ExtResource("3_340m4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CollectionZone"]
