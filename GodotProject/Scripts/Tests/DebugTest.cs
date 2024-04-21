@@ -15,6 +15,5 @@ public partial class DebugTest : Control
     public void join() {
         Client client = new Client();
         AddChild(client);
-        GD.Print("?");
     }
 }

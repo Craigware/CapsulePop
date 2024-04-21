@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ds1u6m8i2uuqe"]
+[gd_scene load_steps=13 format=3 uid="uid://ds1u6m8i2uuqe"]
 
 [ext_resource type="Script" path="res://Scripts/Tests/DebugTest.cs" id="2_y51dj"]
 [ext_resource type="Script" path="res://Scripts/Controllers/UI/FPSCounter.cs" id="3_8sfnp"]
@@ -27,9 +27,17 @@ material = SubResource("StandardMaterial3D_gs2me")
 size = Vector3(1, 0.001, 1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_slkn2"]
+height = 12.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_3qnns"]
 height = 0.1
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2pqha"]
+width = 32
+height = 6
+use_hdr = true
+fill_to = Vector2(1, 0.171429)
+metadata/_snap_enabled = true
 
 [node name="Node3D" type="Node3D"]
 
@@ -137,7 +145,7 @@ size = 10.0
 far = 4010.05
 
 [node name="CollectionZone" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.85158, -1.9282, -3.69178)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.42202, -1.9282, 3.09429)
 script = ExtResource("3_340m4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CollectionZone"]
@@ -146,6 +154,11 @@ shape = SubResource("CylinderShape3D_slkn2")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CollectionZone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0243387, -1, 0.0111499)
 mesh = SubResource("CylinderMesh_3qnns")
+
+[node name="Sprite3D" type="Sprite3D" parent="CollectionZone"]
+transform = Transform3D(0.00626358, -0.261901, 0, 0.0249515, 0.000625828, 0.995229, -0.254521, -0.00638384, 0.0975655, 0.0423756, 2.91523, -0.289273)
+pixel_size = 1.0
+texture = SubResource("GradientTexture2D_2pqha")
 
 [connection signal="button_down" from="Debug/Button" to="Debug" method="join"]
 [connection signal="button_down" from="Debug/Button2" to="Debug" method="host"]

@@ -39,8 +39,6 @@ public partial class GameSate : Node3D
         CapsulesContainer = GetNode<Node3D>("/root/Node3D/Capsules");
         Button startButton = GetNode<Button>("/root/Node3D/Debug/Button4");
 
-        GD.Print(CapsulesContainer);
-
         startButton.ButtonDown += StartGame;   
     }
 
@@ -95,7 +93,6 @@ public partial class GameSate : Node3D
         var newPlayer = playerScene.Instantiate<Player.Player>();
         newPlayer.PlayerID = playerID;
         newPlayer.Name = playerID.ToString();
-        GD.Print(GetTree().GetMultiplayer().GetUniqueId());        
         
         PlayersContainer.AddChild(newPlayer);
         players.Add(newPlayer); 
@@ -126,7 +123,7 @@ public partial class GameSate : Node3D
         foreach (var p in players) {
             if (p.StartReady) readyCount++;
         }
-        GD.Print(players.Count, readyCount);
+        
         if (readyCount != players.Count) {
             GD.Print("readyCount does not equal player count.");
             return;

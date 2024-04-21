@@ -163,7 +163,6 @@ namespace Player
                 if (capsule.IsGrabbed) return;
                 capsule.SetGrabbed(PlayerID);
                 grabbed = capsule;
-                GD.Print(grabbed);
             }
             catch { 
 
