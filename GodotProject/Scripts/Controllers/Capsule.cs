@@ -34,7 +34,7 @@ namespace Critter
 
         public override void _PhysicsProcess(double delta) {
             if (IsGrabbed && GetTree().GetMultiplayer().IsServer()) {
-                Position = Grabber.MousePositionToWorldSpace(4);
+                Position = Grabber.MousePositionToWorldSpace(12);
             }
 
             if (GetTree().GetMultiplayer().IsServer()) {

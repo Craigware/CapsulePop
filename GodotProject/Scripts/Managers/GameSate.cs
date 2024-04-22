@@ -14,9 +14,16 @@ public enum GameStates {
 public partial class GameSate : Node3D
 {
     [Signal] public delegate void GameStateChangeEventHandler();
-
+    private static Godot.Collections.Array<Vector3> CollectionZoneLocations = new(){
+        new Vector3(-7,-2,4),
+        new Vector3(7,-2,4),
+        new Vector3(7,-2,-4),
+        new Vector3(-7,-2,4)
+    };
+     
     private PackedScene playerScene = GD.Load<PackedScene>("res://Scenes/Components/Player.tscn");
-
+    private PackedScene CollectionZoneScene = GD.Load<PackedScene>("res://Scenes/Components/CollectionZone.tscn");
+    
     private GameStates CurrentState = GameStates.Start;
     private Godot.Collections.Array<Player.Player> players = new();
     private Godot.Collections.Array<Player.Player> spectators = new();
@@ -131,20 +138,47 @@ public partial class GameSate : Node3D
     
         GD.Print("===== Starting game =====");
         Rpc(nameof(SwitchState), (int) GameStates.TeamBuilding);
-        Rpc(nameof(StartTeamBuilding));
+        StartTeamBuilding();
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartTeamBuilding() {
         GD.Print("===== Teambuilding Started =====");
         CapsulesCollected = 0;
+        Rpc(nameof(SpawnCapsuleSpawner));
+        
+        int index = 0;
+        foreach(var p in players) {
+            Variant[] args = new Variant[2]{
+                p.PlayerID,
+                index
+            };
 
+            Rpc(nameof(SpawnCollectionZone), args);
+            index++;
+        }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void SpawnCapsuleSpawner() {        
         var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, 12);
         {
             Name = "CapsuleSpawner";
         }
 
-        GetTree().Root.GetChild(1).AddChild(capsuleSpawner);
+        GetTree().Root.GetChild(1).AddChild(capsuleSpawner);        
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void SpawnCollectionZone(long playerId, int index) {
+        Player.Player p = PlayersContainer.GetNode<Player.Player>(playerId.ToString());
+
+        CollectionZone collectionZone = CollectionZoneScene.Instantiate<CollectionZone>();
+        collectionZone.Name = playerId.ToString();
+        collectionZone.associatedPlayer = p;
+
+        GetTree().Root.GetChild(1).AddChild(collectionZone);
+
+        collectionZone.Position = CollectionZoneLocations[index]; 
     }
 
     public void CapsuleCollected(Player.Player player, Capsule capsule) {

@@ -50,7 +50,7 @@ namespace Critter {
             );
 
 
-            private static Creature ProtoGhost { get { return (Creature) protoGhost.Duplicate(); } }
+            public static Creature ProtoGhost { get { return (Creature) protoGhost.Duplicate(); } }
         }
 
         public static class Water { 
@@ -66,7 +66,7 @@ namespace Critter {
             );
 
 
-            private static Creature ProtoWater { get { return (Creature) protoWater.Duplicate(); }} 
+            public static Creature ProtoWater { get { return (Creature) protoWater.Duplicate(); }} 
         }
 
         public static class Fire {
@@ -81,7 +81,7 @@ namespace Critter {
                 )
             );
 
-            private static Creature ProtoFire { get { return (Creature) protoFire.Duplicate(); }}
+            public static Creature ProtoFire { get { return (Creature) protoFire.Duplicate(); }}
         }
  
         public static class Electric {
@@ -96,12 +96,12 @@ namespace Critter {
                 )
             );
 
-            private static Creature ProtoElectric { get { return (Creature) protoElectric.Duplicate(); }} 
+            public static Creature ProtoElectric { get { return (Creature) protoElectric.Duplicate(); }} 
         }
  
  
-        private static class Grass {
-            private static Creature protoGrass = new(
+        public static class Grass {
+            public static Creature protoGrass = new(
                 sprite: new Texture2D(),
                 element: Element.GRASS,
                 baseStats: new Stats(
@@ -112,7 +112,7 @@ namespace Critter {
                 )
             );
 
-            private static Creature ProtoGrass { get { return (Creature) protoGrass.Duplicate(); }}
+            public static Creature ProtoGrass { get { return (Creature) protoGrass.Duplicate(); }}
         }
     }
 }
