@@ -68,6 +68,7 @@ namespace Critter
             Freeze = false;
         } 
 
+
         [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
         public void UpdatePosition(Vector3 updatedPosition) {
             Position = updatedPosition;

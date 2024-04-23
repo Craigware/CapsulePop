@@ -12,7 +12,7 @@ height = 0.1
 script = ExtResource("1_ybycu")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0402622, 6, -0.00504875)
 shape = SubResource("CylinderShape3D_slkn2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

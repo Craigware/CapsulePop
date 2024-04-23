@@ -6,12 +6,13 @@ namespace Player
 {
     public class Party
     {
-        Creature[] party = new Creature[6];
+        PartyCreature[] party = new PartyCreature[6];
 
-        public bool AddToParty(Creature creature) {
+        public bool AddToParty(PartyCreature creature) {
             for (int i = 0; i < party.Length; i++) {
                 if (party[i] == null) {
                     party[i] = creature;
+                    GD.Print(party[i].Creature.CreatureName);
                     return true;
                 }
             }
@@ -21,7 +22,7 @@ namespace Player
 
         public int Count() {
             int count = 0;
-            foreach (Creature c in party) {
+            foreach (PartyCreature c in party) {
                 if (c == null) continue;
                 count++;
             }

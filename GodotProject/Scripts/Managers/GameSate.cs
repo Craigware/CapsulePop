@@ -15,10 +15,10 @@ public partial class GameSate : Node3D
 {
     [Signal] public delegate void GameStateChangeEventHandler();
     private static Godot.Collections.Array<Vector3> CollectionZoneLocations = new(){
-        new Vector3(-7,-2,4),
-        new Vector3(7,-2,4),
-        new Vector3(7,-2,-4),
-        new Vector3(-7,-2,4)
+        new Vector3(-7,-3,4),
+        new Vector3(7,-3,4),
+        new Vector3(7,-3,-4),
+        new Vector3(-7,-3,4)
     };
      
     private PackedScene playerScene = GD.Load<PackedScene>("res://Scenes/Components/Player.tscn");
@@ -30,7 +30,7 @@ public partial class GameSate : Node3D
 
     public int ScoreToWin { get; } = 4;
 
-    private int CapsulesPerTB;
+    private int CapsulesPerTB = 12;
     private int CapsulesCollected;
     
     public Control PlayersContainer;
@@ -160,7 +160,7 @@ public partial class GameSate : Node3D
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void SpawnCapsuleSpawner() {        
-        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, 12);
+        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, CapsulesPerTB);
         {
             Name = "CapsuleSpawner";
         }
@@ -175,6 +175,8 @@ public partial class GameSate : Node3D
         CollectionZone collectionZone = CollectionZoneScene.Instantiate<CollectionZone>();
         collectionZone.Name = playerId.ToString();
         collectionZone.associatedPlayer = p;
+        collectionZone.maxCollects = CapsulesPerTB/players.Count;
+        GD.Print(collectionZone.maxCollects);
 
         GetTree().Root.GetChild(1).AddChild(collectionZone);
 

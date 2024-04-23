@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Godot;
 
 namespace Critter {
@@ -21,24 +22,35 @@ namespace Critter {
         [Export] public Texture2D Sprite { get; set; }
         [Export] public Element Element { get; set; }
         [Export] public Stats BaseStats { get; set; }
+        public string CreatureName {get; set;}
         
-        public Creature() : this(null, Element.FIRE, new Stats()){}
-        public Creature(Texture2D sprite, Element element, Stats baseStats) {
+        public Creature() : this("placeholder", null, Element.FIRE, new Stats()){}
+        public Creature(string name, Texture2D sprite, Element element, Stats baseStats) {
             Sprite = sprite;
             Element = element;
             BaseStats = baseStats;
+            CreatureName = name;
         }
 
 	}
 
-    public partial class PartyCreature : Creature {
+    public partial class PartyCreature {
         public Stats CurrentStats { get; set; }
         public Rarity Rarity { get; set; }
+        public Creature Creature { get; set; }
+
+        public PartyCreature() : this(new Stats(), 0, null){}
+        public PartyCreature(Stats currentStats, Rarity rarity, Creature c) {
+            CurrentStats = currentStats;
+            Rarity = rarity;
+            Creature = c;
+        }
     }
 
     public static class CreatureList {
         public static class Ghost {
             private static Creature protoGhost = new(
+                name: "Protoghost",
                 sprite: new Texture2D(),
                 element: Element.GHOST,
                 baseStats: new Stats(
@@ -50,11 +62,12 @@ namespace Critter {
             );
 
 
-            public static Creature ProtoGhost { get { return (Creature) protoGhost.Duplicate(); } }
+            public static Creature ProtoGhost { get { return protoGhost; } }
         }
 
         public static class Water { 
             private static Creature protoWater = new(
+                name: "Protowater",
                 sprite: new Texture2D(),
                 element: Element.WATER,
                 baseStats: new Stats(
@@ -66,11 +79,12 @@ namespace Critter {
             );
 
 
-            public static Creature ProtoWater { get { return (Creature) protoWater.Duplicate(); }} 
+            public static Creature ProtoWater { get { return protoWater; }} 
         }
 
         public static class Fire {
             private static Creature protoFire = new(
+                name: "Protofire",
                 sprite: new Texture2D(),
                 element: Element.FIRE,
                 baseStats: new Stats(
@@ -81,11 +95,12 @@ namespace Critter {
                 )
             );
 
-            public static Creature ProtoFire { get { return (Creature) protoFire.Duplicate(); }}
+            public static Creature ProtoFire { get { return protoFire; }}
         }
  
         public static class Electric {
             private static Creature protoElectric = new(
+                name: "Protoelectric",
                 sprite: new Texture2D(),
                 element: Element.ELECTRIC,
                 baseStats: new Stats(
@@ -96,12 +111,13 @@ namespace Critter {
                 )
             );
 
-            public static Creature ProtoElectric { get { return (Creature) protoElectric.Duplicate(); }} 
+            public static Creature ProtoElectric { get { return protoElectric; }} 
         }
  
  
         public static class Grass {
             public static Creature protoGrass = new(
+                name: "Protograss",
                 sprite: new Texture2D(),
                 element: Element.GRASS,
                 baseStats: new Stats(
@@ -112,7 +128,7 @@ namespace Critter {
                 )
             );
 
-            public static Creature ProtoGrass { get { return (Creature) protoGrass.Duplicate(); }}
+            public static Creature ProtoGrass { get { return protoGrass; }}
         }
     }
 }
