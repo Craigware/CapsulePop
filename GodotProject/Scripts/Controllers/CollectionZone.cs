@@ -32,6 +32,9 @@ public partial class CollectionZone : Area3D
         collecting = false;
         collects++;
 
+        EmitSignal(SignalName.CapsuleCollected);
+
+        GD.Print(collects);
         if (collects == maxCollects) {
             QueueFree();
         }

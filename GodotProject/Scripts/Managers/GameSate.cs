@@ -31,7 +31,7 @@ public partial class GameSate : Node3D
     public int ScoreToWin { get; } = 4;
 
     private int CapsulesPerTB = 12;
-    private int CapsulesCollected;
+    private int CapsulesCollected = 0;
     
     public Control PlayersContainer;
     public Node3D CapsulesContainer;
@@ -148,9 +148,10 @@ public partial class GameSate : Node3D
         
         int index = 0;
         foreach(var p in players) {
-            Variant[] args = new Variant[2]{
+            Variant[] args = new Variant[3]{
                 p.PlayerID,
-                index
+                index,
+                players.Count
             };
 
             Rpc(nameof(SpawnCollectionZone), args);
@@ -169,13 +170,14 @@ public partial class GameSate : Node3D
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void SpawnCollectionZone(long playerId, int index) {
+    public void SpawnCollectionZone(long playerId, int index, int totalPlayers) {
         Player.Player p = PlayersContainer.GetNode<Player.Player>(playerId.ToString());
 
         CollectionZone collectionZone = CollectionZoneScene.Instantiate<CollectionZone>();
         collectionZone.Name = playerId.ToString();
         collectionZone.associatedPlayer = p;
-        collectionZone.maxCollects = CapsulesPerTB/players.Count;
+        collectionZone.maxCollects = CapsulesPerTB/totalPlayers;
+        collectionZone.CapsuleCollected += CapsuleCollected;
         GD.Print(collectionZone.maxCollects);
 
         GetTree().Root.GetChild(1).AddChild(collectionZone);
@@ -183,10 +185,7 @@ public partial class GameSate : Node3D
         collectionZone.Position = CollectionZoneLocations[index]; 
     }
 
-    public void CapsuleCollected(Player.Player player, Capsule capsule) {
-        // get a random creature based on the elements type;
-        // give to the player
-
+    public void CapsuleCollected() {
         CapsulesCollected++;
         if (CapsulesCollected == CapsulesPerTB) EndTeamBuilding(); 
     }
@@ -197,7 +196,7 @@ public partial class GameSate : Node3D
     }
 
     public void StartBattle() {
-
+        GD.Print("===== Battle Started =====");
     }
 
     public void EndBattle() {
