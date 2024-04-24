@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://b1iorggh3e00"]
+[gd_scene load_steps=8 format=3 uid="uid://b1iorggh3e00"]
 
 [ext_resource type="Script" path="res://Scripts/Controllers/Capsule.cs" id="1_ly6o8"]
-[ext_resource type="Texture2D" uid="uid://btywe41d2iyqu" path="res://Assets/Images/Asset 1.png" id="2_hxejd"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oi554"]
 friction = 0.31
@@ -48,7 +47,6 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 top_level = true
 cast_shadow = 2
 billboard = 1
-texture = ExtResource("2_hxejd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_vc17v")

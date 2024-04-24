@@ -6,13 +6,14 @@ namespace Player
 {
     public class Party
     {
-        PartyCreature[] party = new PartyCreature[6];
+        Creature[] party = new Creature[6];
+        public Creature[] Array { get { return party; } }
 
-        public bool AddToParty(PartyCreature creature) {
+        public bool AddToParty(Creature creature) {
             for (int i = 0; i < party.Length; i++) {
                 if (party[i] == null) {
                     party[i] = creature;
-                    GD.Print(party[i].Creature.CreatureName);
+                    GD.Print("STATS " + party[i]);
                     return true;
                 }
             }
@@ -22,7 +23,7 @@ namespace Player
 
         public int Count() {
             int count = 0;
-            foreach (PartyCreature c in party) {
+            foreach (Creature c in party) {
                 if (c == null) continue;
                 count++;
             }
@@ -62,7 +63,7 @@ namespace Player
 
         [Export] public Control cursor;
 
-        Capsule grabbed = null;
+        Grabbable grabbed = null;
 
 
         Vector2 relative = Vector2.Zero;
@@ -160,10 +161,10 @@ namespace Player
             var target = CreateRayCast(mousePosition, 1000);
             
             try {
-                Capsule capsule = (Capsule) target;
-                if (capsule.IsGrabbed) return;
-                capsule.SetGrabbed(PlayerID);
-                grabbed = capsule;
+                Grabbable grabbable = (Grabbable) target;
+                if (grabbable.IsGrabbed) return;
+                grabbable.SetGrabbed(PlayerID);
+                grabbed = grabbable;
             }
             catch { 
 

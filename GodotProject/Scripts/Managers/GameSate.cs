@@ -23,6 +23,7 @@ public partial class GameSate : Node3D
      
     private PackedScene playerScene = GD.Load<PackedScene>("res://Scenes/Components/Player.tscn");
     private PackedScene CollectionZoneScene = GD.Load<PackedScene>("res://Scenes/Components/CollectionZone.tscn");
+    private PackedScene BoardCreatureScene = GD.Load<PackedScene>("res://Scenes/Components/BoardCreature.tscn");
     
     private GameStates CurrentState = GameStates.Start;
     private Godot.Collections.Array<Player.Player> players = new();
@@ -34,6 +35,7 @@ public partial class GameSate : Node3D
     private int CapsulesCollected = 0;
     
     public Control PlayersContainer;
+    public Node3D BoardCreaturesContainer;
     public Node3D CapsulesContainer;
 
     private MultiplayerApi multiplayer;
@@ -44,6 +46,7 @@ public partial class GameSate : Node3D
 
         PlayersContainer = GetNode<Control>("/root/Node3D/Players");
         CapsulesContainer = GetNode<Node3D>("/root/Node3D/Capsules");
+        BoardCreaturesContainer = GetNode<Node3D>("/root/Node3D/Creatures");
         Button startButton = GetNode<Button>("/root/Node3D/Debug/Button4");
 
         startButton.ButtonDown += StartGame;   
@@ -187,16 +190,57 @@ public partial class GameSate : Node3D
 
     public void CapsuleCollected() {
         CapsulesCollected++;
-        if (CapsulesCollected == CapsulesPerTB) EndTeamBuilding(); 
+        if (GetTree().GetMultiplayer().IsServer()) {
+            if (CapsulesCollected == CapsulesPerTB) EndTeamBuilding(); 
+        }
     }
 
     public void EndTeamBuilding() {
        // await animation or timing
-       SwitchState(GameStates.Battle); 
+        Rpc(nameof(SwitchState), (int) GameStates.Battle);
+        StartBattle();
     }
 
     public void StartBattle() {
+        if (!GetTree().GetMultiplayer().IsServer()) return;
         GD.Print("===== Battle Started =====");
+        int i = 0;
+        foreach (var p in players) {
+            int creatureIndex = 0;
+            foreach (var c in p.party.Array) {
+                Variant[] args = new Variant[]{
+                    i,
+                    p.PlayerID,
+                    c.CreatureName,
+                    creatureIndex
+                };
+
+                Rpc(nameof(SummonCreature), args);
+                creatureIndex++; 
+            }
+            i++;
+        }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void SummonCreatureContainer(long playerId) {
+
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void SummonCreature(int playerIndex, long playerId, string creatureId, int creatureIndex) {
+        Creature c = CreatureList.All[creatureId];
+        PartyCreature pC = new(
+            (Stats) c.BaseStats.Duplicate(),
+            0,
+            c
+        );
+        BoardCreature bC = BoardCreatureScene.Instantiate<BoardCreature>();
+        bC.PartyCreature = pC;
+        bC.Name = creatureIndex.ToString();
+
+        BoardCreaturesContainer.AddChild(bC);
+        bC.Position = CollectionZoneLocations[playerIndex] + Vector3.Up*3;
     }
 
     public void EndBattle() {

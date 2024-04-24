@@ -170,5 +170,7 @@ projection = 1
 size = 10.0
 far = 4010.05
 
+[node name="Creatures" type="Node3D" parent="."]
+
 [connection signal="button_down" from="Debug/Button" to="Debug" method="join"]
 [connection signal="button_down" from="Debug/Button2" to="Debug" method="host"]

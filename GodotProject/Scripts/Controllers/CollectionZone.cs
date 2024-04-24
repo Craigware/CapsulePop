@@ -23,8 +23,7 @@ public partial class CollectionZone : Area3D
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     private void CaptureCapsule(Element capsuleElement) {
         Creature c = DecideCreature(capsuleElement);
-        PartyCreature partyCreature = new((Stats) c.BaseStats.Duplicate(), 0, c);
-        associatedPlayer.party.AddToParty(partyCreature);
+        associatedPlayer.party.AddToParty(c);
 
         grabbedCapsule.QueueFree();
         collectionTimer.QueueFree();

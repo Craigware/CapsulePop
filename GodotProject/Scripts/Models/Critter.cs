@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
 using Godot;
 
@@ -22,7 +24,7 @@ namespace Critter {
         [Export] public Texture2D Sprite { get; set; }
         [Export] public Element Element { get; set; }
         [Export] public Stats BaseStats { get; set; }
-        public string CreatureName {get; set;}
+        [Export] public string CreatureName {get; set;}
         
         public Creature() : this("placeholder", null, Element.FIRE, new Stats()){}
         public Creature(string name, Texture2D sprite, Element element, Stats baseStats) {
@@ -31,10 +33,9 @@ namespace Critter {
             BaseStats = baseStats;
             CreatureName = name;
         }
-
 	}
 
-    public partial class PartyCreature {
+    public partial class PartyCreature : Resource {
         public Stats CurrentStats { get; set; }
         public Rarity Rarity { get; set; }
         public Creature Creature { get; set; }
@@ -48,10 +49,20 @@ namespace Critter {
     }
 
     public static class CreatureList {
+        static Godot.Collections.Dictionary<string, Creature> all = new(){
+            ["Protoghost"]=Ghost.ProtoGhost,
+            ["Protofire"]=Fire.ProtoFire,
+            ["Protograss"]=Grass.ProtoGrass,
+            ["Protoelectric"]=Electric.ProtoElectric,
+            ["Protowater"]=Water.ProtoWater
+        };
+
+        public static Godot.Collections.Dictionary<string, Creature> All { get { return all; } }
+        
         public static class Ghost {
             private static Creature protoGhost = new(
                 name: "Protoghost",
-                sprite: new Texture2D(),
+                sprite: GD.Load<Texture2D>("res://Assets/Images/Protoghost.png"),
                 element: Element.GHOST,
                 baseStats: new Stats(
                     attackSpeed: 1,
@@ -68,7 +79,7 @@ namespace Critter {
         public static class Water { 
             private static Creature protoWater = new(
                 name: "Protowater",
-                sprite: new Texture2D(),
+                sprite: GD.Load<Texture2D>("res://Assets/Images/Protowater.png"),
                 element: Element.WATER,
                 baseStats: new Stats(
                     attackSpeed: 1,
@@ -85,7 +96,7 @@ namespace Critter {
         public static class Fire {
             private static Creature protoFire = new(
                 name: "Protofire",
-                sprite: new Texture2D(),
+                sprite: GD.Load<Texture2D>("res://Assets/Images/Protofire.png"),
                 element: Element.FIRE,
                 baseStats: new Stats(
                     attackSpeed: 1,
@@ -101,7 +112,7 @@ namespace Critter {
         public static class Electric {
             private static Creature protoElectric = new(
                 name: "Protoelectric",
-                sprite: new Texture2D(),
+                sprite: GD.Load<Texture2D>("res://Assets/Images/Protoelectric.png"),
                 element: Element.ELECTRIC,
                 baseStats: new Stats(
                     attackSpeed: 2,
@@ -116,9 +127,9 @@ namespace Critter {
  
  
         public static class Grass {
-            public static Creature protoGrass = new(
+            private static Creature protoGrass = new(
                 name: "Protograss",
-                sprite: new Texture2D(),
+                sprite: GD.Load<Texture2D>("res://Assets/Images/Protograss.png"),
                 element: Element.GRASS,
                 baseStats: new Stats(
                     attackSpeed: 3,
