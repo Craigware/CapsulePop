@@ -59,8 +59,13 @@ No current available way to play, please check back in the future.
 
 ---
 
-# Out of scope ideas to implement out of time constraint
+# Out of time scope ideas
+*Man this list got long..*
+- [ ] Disconnect / Reconnect functionality
+- [ ] Animations
+- [ ] Overround Teambuilding
+- [ ] Creature rarity
+- [ ] Creature variety
 - [ ] Touch controls
 - [ ] Powerups
-- [ ] Static Webpage
 - [ ] Player Teaming
