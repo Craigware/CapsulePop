@@ -37,14 +37,16 @@ namespace Critter {
 
     public partial class PartyCreature : Resource {
         public Stats CurrentStats { get; set; }
+        public long OwnerID { get; set; }
         public Rarity Rarity { get; set; }
         public Creature Creature { get; set; }
 
-        public PartyCreature() : this(new Stats(), 0, null){}
-        public PartyCreature(Stats currentStats, Rarity rarity, Creature c) {
+        public PartyCreature() : this(new Stats(), 0, null, 0){}
+        public PartyCreature(Stats currentStats, Rarity rarity, Creature c, long ownerId) {
             CurrentStats = currentStats;
             Rarity = rarity;
             Creature = c;
+            OwnerID = ownerId;
         }
     }
 

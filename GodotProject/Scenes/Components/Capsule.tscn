@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1iorggh3e00"]
+[gd_scene load_steps=9 format=3 uid="uid://b1iorggh3e00"]
 
 [ext_resource type="Script" path="res://Scripts/Controllers/Capsule.cs" id="1_ly6o8"]
 
@@ -6,7 +6,10 @@
 friction = 0.31
 bounce = 0.7
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8mthy"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_1k75p"]
+material = SubResource("StandardMaterial3D_8mthy")
 radius = 0.25
 height = 0.5
 

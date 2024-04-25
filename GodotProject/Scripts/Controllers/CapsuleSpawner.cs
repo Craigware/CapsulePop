@@ -44,9 +44,13 @@ namespace Critter
                 int rX = new Random().Next(-1, 1) * ballSpawnForce;
                 int rY = new Random().Next(-1, 1) * ballSpawnForce;
 
-                var args = new Variant[2] {
+
+                int element = new Random().Next(0,5);
+                
+                var args = new Variant[3] {
                     new Vector3(rX,1,rY),
                     new Vector3(0,0,0),
+                    element
                 };
 
                 Rpc(nameof(SpawnCapsule), args);
@@ -54,9 +58,8 @@ namespace Critter
         }
 
         [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-        public void SpawnCapsule(Vector3 force, Vector3 point) {
+        public void SpawnCapsule(Vector3 force, Vector3 point, Element element) {
             Capsule capsule = capsuleScene.Instantiate<Capsule>();
-            Element element = (Element) new Random().Next(0,5);
             
             capsule.element = element;
             capsule.Name = $"Capsule {spawnedAmount}";

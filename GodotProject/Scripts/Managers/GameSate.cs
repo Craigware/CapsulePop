@@ -223,23 +223,23 @@ public partial class GameSate : Node3D
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void SummonCreatureContainer(long playerId) {
-
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void SummonCreature(int playerIndex, long playerId, string creatureId, int creatureIndex) {
+        if (BoardCreaturesContainer.GetNode<Node3D>(playerId.ToString()) == null) {
+            BoardCreaturesContainer.AddChild(new Node3D(){Name=playerId.ToString()});
+        }
+        
         Creature c = CreatureList.All[creatureId];
         PartyCreature pC = new(
             (Stats) c.BaseStats.Duplicate(),
             0,
-            c
+            c,
+            playerId
         );
         BoardCreature bC = BoardCreatureScene.Instantiate<BoardCreature>();
         bC.PartyCreature = pC;
         bC.Name = creatureIndex.ToString();
-
-        BoardCreaturesContainer.AddChild(bC);
+        bC.Fient += EndBattle;
+        BoardCreaturesContainer.GetNode<Node3D>(playerId.ToString()).AddChild(bC);
         bC.Position = CollectionZoneLocations[playerIndex] + Vector3.Up*3;
     }
 
