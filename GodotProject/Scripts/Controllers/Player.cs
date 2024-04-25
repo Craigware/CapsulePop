@@ -13,7 +13,6 @@ namespace Player
             for (int i = 0; i < party.Length; i++) {
                 if (party[i] == null) {
                     party[i] = creature;
-                    GD.Print("STATS " + party[i]);
                     return true;
                 }
             }
@@ -28,6 +27,10 @@ namespace Player
                 count++;
             }
             return count;
+        }
+
+        public void Clear() {
+            party = new Creature[6];
         }
     }
 

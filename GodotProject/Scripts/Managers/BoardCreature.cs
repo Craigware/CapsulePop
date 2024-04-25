@@ -10,9 +10,10 @@ public partial class BoardCreature : Grabbable
     private CollisionShape3D hitbox;
     private Timer attackTimer;
     private Area3D attackRange;
+    bool Dead = false;
 
     [Signal]
-    public delegate void FientEventHandler();
+    public delegate void FientEventHandler(BoardCreature c);
 
 	public override void _Ready() {
         gfx = GetNode<Sprite3D>("./Gfx");
@@ -21,18 +22,31 @@ public partial class BoardCreature : Grabbable
         attackRange = GetNode<Area3D>("./Range");
 
         gfx.Texture = PartyCreature.Creature.Sprite;
+        attackTimer.WaitTime = 1;
+        var colShape = attackRange.GetChild<CollisionShape3D>(0);
+        colShape.Shape = new CylinderShape3D() {
+            Height = 2,
+            Radius = PartyCreature.CurrentStats.Range
+        };
 
         attackTimer.Timeout += Attack;
         
         attackTimer.Start();
     }
 
+    public override void _Process(double delta) {
+        if (GetTree().GetMultiplayer().GetUniqueId() == PartyCreature.OwnerID) {
+            GetNode("Viewport").GetNode("Vbox").GetNode<RichTextLabel>("Text").Text = "[center]" + PartyCreature.CurrentStats.Health + "/" + PartyCreature.Creature.BaseStats.Health + "[/center]";
+        }
+    }
+
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void Damage(int amount) {
         PartyCreature.CurrentStats.Health -= amount;
-        GD.Print("ow..");
-        if (PartyCreature.CurrentStats.Health <= 0) {
-            Die();
+
+        if (PartyCreature.CurrentStats.Health <= 0 && Dead != true) {
+            Dead = true;
+            Rpc(nameof(Die));
         }
     }
 
@@ -43,13 +57,16 @@ public partial class BoardCreature : Grabbable
             PartyCreature.CurrentStats.Health = PartyCreature.Creature.BaseStats.Health;
         }
     }
-
+    
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void Die() {
+        EmitSignal(SignalName.Fient, this);
         QueueFree();
-        EmitSignal(SignalName.Fient);
     }
 
     public void Attack() {
+        if (!GetTree().GetMultiplayer().IsServer()) return;
+
         var target = FindTarget();
         if (target == null) return;
 

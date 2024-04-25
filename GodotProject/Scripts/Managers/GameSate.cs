@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using Critter;
 using Godot;
 
@@ -27,6 +28,7 @@ public partial class GameSate : Node3D
     
     private GameStates CurrentState = GameStates.Start;
     private Godot.Collections.Array<Player.Player> players = new();
+    private Godot.Collections.Dictionary<Player.Player, int> battlePlayers = new();
     private Godot.Collections.Array<Player.Player> spectators = new();
 
     public int ScoreToWin { get; } = 4;
@@ -164,10 +166,10 @@ public partial class GameSate : Node3D
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void SpawnCapsuleSpawner() {        
-        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, CapsulesPerTB);
+        var capsuleSpawner = new CapsuleSpawner(CapsulesContainer, 1f, CapsulesPerTB)
         {
-            Name = "CapsuleSpawner";
-        }
+            Name = "CapsuleSpawner"
+        };
 
         GetTree().Root.GetChild(1).AddChild(capsuleSpawner);        
     }
@@ -195,8 +197,14 @@ public partial class GameSate : Node3D
         }
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void RemoveBallSpawner() {
+        GetTree().Root.GetChild(1).GetNode<CapsuleSpawner>("CapsuleSpawner").QueueFree();
+    }
+
     public void EndTeamBuilding() {
        // await animation or timing
+        Rpc(nameof(RemoveBallSpawner));
         Rpc(nameof(SwitchState), (int) GameStates.Battle);
         StartBattle();
     }
@@ -205,8 +213,10 @@ public partial class GameSate : Node3D
         if (!GetTree().GetMultiplayer().IsServer()) return;
         GD.Print("===== Battle Started =====");
         int i = 0;
+        battlePlayers = new(); 
         foreach (var p in players) {
             int creatureIndex = 0;
+            battlePlayers.Add(p, p.party.Count());
             foreach (var c in p.party.Array) {
                 Variant[] args = new Variant[]{
                     i,
@@ -238,26 +248,69 @@ public partial class GameSate : Node3D
         BoardCreature bC = BoardCreatureScene.Instantiate<BoardCreature>();
         bC.PartyCreature = pC;
         bC.Name = creatureIndex.ToString();
-        bC.Fient += EndBattle;
+        bC.Fient += CreatureFeinted;
         BoardCreaturesContainer.GetNode<Node3D>(playerId.ToString()).AddChild(bC);
         bC.Position = CollectionZoneLocations[playerIndex] + Vector3.Up*3;
     }
 
-    public void EndBattle() {
- 
-    }
+    public void CreatureFeinted(BoardCreature c) {
+        if (!GetTree().GetMultiplayer().IsServer()) return;
 
-    public void CheckWincon() {
-        foreach (var player in players) {
-            if (player.Score == ScoreToWin) {
-                EndGame(player);
-                return;
-            }
+        Player.Player p = PlayersContainer.GetNode<Player.Player>(c.PartyCreature.OwnerID.ToString());
+        battlePlayers[p] -= 1;
+        GD.Print(battlePlayers);
+        
+        if (battlePlayers[p] <= 0) {
+            battlePlayers.Remove(p);
+        }
+
+        if (battlePlayers.Keys.Count() == 1) {
+            var alive = battlePlayers.Keys;
+            GD.Print("One player remains.");
+            Player.Player winner = (Player.Player) alive.ToArray().GetValue(0);
+            winner.Score++;
+            GD.Print(winner, winner.Score);
+            EndBattle();
         }
     }
 
+    public void EndBattle() {
+        Rpc(nameof(ClearBoardCreatures));
+        var winner = CheckWincon();
+        if (winner != null) {
+            EndGame(winner);
+        } else {
+            LoopGameState();
+        }
+    }
+
+    [ Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void ClearBoardCreatures() {
+        foreach (var c in BoardCreaturesContainer.GetChildren()) {
+            c.QueueFree();
+        }
+    }
+
+    public void LoopGameState() {
+        foreach (var p in players) {
+            p.party.Clear();
+        }
+
+        GD.Print("===== Game state looping =====");
+        Rpc(nameof(SwitchState), (int) GameStates.TeamBuilding);
+        StartTeamBuilding();
+    }
+
+    public Player.Player CheckWincon() {
+        foreach (var player in players) {
+            if (player.Score == ScoreToWin) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     public void EndGame(Player.Player player) {
-        SwitchState(GameStates.End);
-        SwitchState(GameStates.Start); 
+       GD.Print(player.PlayerName + " has won.");
     }
 }

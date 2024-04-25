@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dd7fb8x8ctkvv"]
+[gd_scene load_steps=6 format=3 uid="uid://dd7fb8x8ctkvv"]
 
 [ext_resource type="Script" path="res://Scripts/Managers/BoardCreature.cs" id="1_5yc6k"]
 [ext_resource type="Texture2D" uid="uid://bgsqfthmk0koh" path="res://Assets/Images/Protograss.png" id="2_ataf8"]
@@ -6,7 +6,10 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_k18tw"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_nxaoj"]
-radius = 2.0
+radius = 1.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k2ams"]
+viewport_path = NodePath("Viewport")
 
 [node name="BoardCreature" type="RigidBody3D"]
 script = ExtResource("1_5yc6k")
@@ -32,3 +35,23 @@ shape = SubResource("CylinderShape3D_nxaoj")
 remote_path = NodePath("../Range")
 update_rotation = false
 update_scale = false
+
+[node name="Viewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(256, 128)
+
+[node name="Vbox" type="VBoxContainer" parent="Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Text" type="RichTextLabel" parent="Viewport/Vbox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+billboard = 1
+texture = SubResource("ViewportTexture_k2ams")
