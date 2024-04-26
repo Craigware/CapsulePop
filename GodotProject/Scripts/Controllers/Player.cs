@@ -1,6 +1,7 @@
 using Godot;
 using Critter;
 using System.Windows.Markup;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Player
 {
@@ -222,12 +223,19 @@ namespace Player
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void Stun(int duration) {
             Stunned = true;
-            //! Need to add the timer still
-        }
+            
+            Timer timer = new() {
+                WaitTime = duration/1000,
+            };
 
-        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-        public void Unstun() {
-            Stunned = false;
+            timer.Timeout += () => {
+                timer.QueueFree();
+                GD.Print("Unstunned");
+                Stunned = false;
+            };
+
+            AddChild(timer);
+            timer.Start();
         }
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
