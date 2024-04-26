@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://dd7fb8x8ctkvv"]
+
+[ext_resource type="Script" path="res://Scripts/Controllers/BoardCreature.gd" id="1_5yc6k"]
+[ext_resource type="Texture2D" uid="uid://bgsqfthmk0koh" path="res://Assets/Images/Protograss.png" id="2_ataf8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_k18tw"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_nxaoj"]
+radius = 1.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k2ams"]
+viewport_path = NodePath("Viewport")
+
+[node name="BoardCreature" type="RigidBody3D"]
+script = ExtResource("1_5yc6k")
+
+[node name="Gfx" type="Sprite3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+billboard = 1
+texture = ExtResource("2_ataf8")
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_k18tw")
+
+[node name="Range" type="Area3D" parent="."]
+top_level = true
+
+[node name="Col" type="CollisionShape3D" parent="Range"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_nxaoj")
+
+[node name="AttackTimer" type="Timer" parent="."]
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="."]
+remote_path = NodePath("../Range")
+update_rotation = false
+update_scale = false
+
+[node name="Viewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(256, 128)
+
+[node name="Vbox" type="VBoxContainer" parent="Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Text" type="RichTextLabel" parent="Viewport/Vbox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+billboard = 1
+texture = SubResource("ViewportTexture_k2ams")
