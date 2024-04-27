@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3 uid="uid://c1rqoabt3s8o"]
+
+[ext_resource type="Texture2D" uid="uid://bh7rcqar3khga" path="res://Assets/Images/Artboard 3.png" id="1_ljsf0"]
+[ext_resource type="Script" path="res://Scripts/Controllers/intro.gd" id="1_t1sod"]
+[ext_resource type="Texture2D" uid="uid://crgyrv1356nhq" path="res://Assets/Images/Artboard 1.png" id="2_d4fpc"]
+[ext_resource type="Texture2D" uid="uid://dhtpn5n6jweor" path="res://Assets/Images/Artboard 2.png" id="3_xhv12"]
+
+[sub_resource type="Gradient" id="Gradient_vb7ho"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_hels5"]
+gradient = SubResource("Gradient_vb7ho")
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t1sod")
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_hels5")
+
+[node name="Logo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ljsf0")
+
+[node name="Controls" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_d4fpc")
+
+[node name="Phases" type="TextureRect" parent="."]
+auto_translate_mode = 1
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_xhv12")

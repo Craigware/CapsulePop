@@ -35,7 +35,7 @@ var CapsulesContainer
 
 var mp
 
-func _ready():
+func set_up():
 	mp = get_tree().get_multiplayer()
 	print("Game state initialized.")
 
