@@ -52,7 +52,7 @@ func _ready():
 
 func to_dict() -> Dictionary:
 	var player = {}
-    
+	
 	player["PlayerName"] = PlayerName
 	player["PlayerIcon"] = PlayerIcon
 	player["PlayerID"] = PlayerID

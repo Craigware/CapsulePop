@@ -3,13 +3,20 @@ extends Node
 class_name Client
 
 var mp : MultiplayerAPI
-const development_ip = "127.0.0.1"
-const port = 52401
+var development_ip = "127.0.0.1"
+var port = 52401
+var peer
 
 func _ready():
     mp = get_tree().get_multiplayer()
-    var peer = ENetMultiplayerPeer.new()
-    peer.create_client(development_ip, port)
-    mp.multiplayer_peer = peer
+    peer = ENetMultiplayerPeer.new()
     
+    
+    attempt_connect(development_ip, port)
     print("Client created.")
+
+func attempt_connect(ip, p):
+    peer.create_client(ip, p)
+    
+    mp.multiplayer_peer = peer
+    print("Client connected.")

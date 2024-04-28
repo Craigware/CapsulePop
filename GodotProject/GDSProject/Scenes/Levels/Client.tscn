@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dwp6q3hhsqqgr"]
+[gd_scene load_steps=7 format=3 uid="uid://dwp6q3hhsqqgr"]
 
 [ext_resource type="Texture2D" uid="uid://bej7157pfydbe" path="res://Assets/Images/Logo.png" id="1_4xgvq"]
+[ext_resource type="Script" path="res://Scripts/Controllers/ClientConnect.gd" id="1_rxkmw"]
 [ext_resource type="Texture2D" uid="uid://d2timji7pd0xn" path="res://Assets/Images/Protoelectric.png" id="2_nqqn4"]
 [ext_resource type="Texture2D" uid="uid://do3qah3l06voi" path="res://Assets/Images/Protoghost.png" id="3_csw16"]
 [ext_resource type="Texture2D" uid="uid://bcn7q4iefllx0" path="res://Assets/Images/Protofire.png" id="4_f6ju2"]
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_rxkmw")
 
 [node name="LineEdit" type="LineEdit" parent="."]
 layout_mode = 1
@@ -67,58 +69,63 @@ offset_bottom = 774.0
 text = "Connect"
 
 [node name="Logo" type="Sprite2D" parent="."]
-position = Vector2(931, 236)
+position = Vector2(931, 267)
 scale = Vector2(0.940673, 0.940673)
 texture = ExtResource("1_4xgvq")
 
-[node name="Protoelectric" type="Sprite2D" parent="."]
-position = Vector2(382, 964)
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Protoelectric" type="Sprite2D" parent="Control"]
+position = Vector2(361, 982)
 texture = ExtResource("2_nqqn4")
 
-[node name="Protoghost" type="Sprite2D" parent="."]
-position = Vector2(238, 910)
+[node name="Protoghost" type="Sprite2D" parent="Control"]
+position = Vector2(217, 928)
 texture = ExtResource("3_csw16")
 
-[node name="Protofire" type="Sprite2D" parent="."]
-position = Vector2(106, 937)
+[node name="Protofire" type="Sprite2D" parent="Control"]
+position = Vector2(85, 955)
 texture = ExtResource("4_f6ju2")
 
-[node name="Protowater" type="Sprite2D" parent="."]
-position = Vector2(544, 940)
+[node name="Protowater" type="Sprite2D" parent="Control"]
+position = Vector2(523, 958)
 texture = ExtResource("5_gjj24")
 
-[node name="Protoelectric2" type="Sprite2D" parent="."]
-position = Vector2(958, 955)
+[node name="Protoelectric2" type="Sprite2D" parent="Control"]
+position = Vector2(937, 973)
 texture = ExtResource("2_nqqn4")
 
-[node name="Protoghost2" type="Sprite2D" parent="."]
-position = Vector2(814, 901)
+[node name="Protoghost2" type="Sprite2D" parent="Control"]
+position = Vector2(793, 919)
 texture = ExtResource("3_csw16")
 
-[node name="Protofire2" type="Sprite2D" parent="."]
-position = Vector2(682, 928)
+[node name="Protofire2" type="Sprite2D" parent="Control"]
+position = Vector2(661, 946)
 texture = ExtResource("4_f6ju2")
 
-[node name="Protowater2" type="Sprite2D" parent="."]
-position = Vector2(1120, 931)
+[node name="Protowater2" type="Sprite2D" parent="Control"]
+position = Vector2(1099, 949)
 texture = ExtResource("5_gjj24")
 
-[node name="Protoelectric3" type="Sprite2D" parent="."]
-position = Vector2(1555, 952)
+[node name="Protoelectric3" type="Sprite2D" parent="Control"]
+position = Vector2(1534, 970)
 texture = ExtResource("2_nqqn4")
 
-[node name="Protoghost3" type="Sprite2D" parent="."]
-position = Vector2(1411, 898)
+[node name="Protoghost3" type="Sprite2D" parent="Control"]
+position = Vector2(1390, 916)
 texture = ExtResource("3_csw16")
 
-[node name="Protofire3" type="Sprite2D" parent="."]
-position = Vector2(1279, 925)
+[node name="Protofire3" type="Sprite2D" parent="Control"]
+position = Vector2(1258, 943)
 texture = ExtResource("4_f6ju2")
 
-[node name="Protowater3" type="Sprite2D" parent="."]
-position = Vector2(1717, 928)
+[node name="Protowater3" type="Sprite2D" parent="Control"]
+position = Vector2(1696, 946)
 texture = ExtResource("5_gjj24")
 
-[node name="Protofire4" type="Sprite2D" parent="."]
-position = Vector2(1858, 925)
+[node name="Protofire4" type="Sprite2D" parent="Control"]
+position = Vector2(1837, 943)
 texture = ExtResource("4_f6ju2")

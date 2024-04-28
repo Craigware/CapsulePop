@@ -35,6 +35,18 @@ var CapsulesContainer
 
 var mp
 
+
+func _ready():
+	mp = get_tree().get_multiplayer()
+	print("Game state initialized.")
+
+	PlayersContainer = get_node("/root/Node3D/Players")
+	CapsulesContainer = get_node("/root/Node3D/Capsules")
+	BoardCreaturesContainer = get_node("/root/Node3D/Creatures")
+	var startButton = get_node("/root/Node3D/Debug/Button4")
+
+	startButton.button_down.connect(start_game)
+
 func set_up():
 	mp = get_tree().get_multiplayer()
 	print("Game state initialized.")
@@ -229,10 +241,11 @@ func summon_creature(playerIndex, playerId, creatureId, creatureIndex):
 	bC.position = CollectionZoneLocations[playerIndex] + Vector3.UP * 3
 
 func creature_feinted(c):
+	c = c as BoardCreature
 	if not get_tree().get_multiplayer().is_server():
 		return
 
-	var p = PlayersContainer.get_node(str(c.party_creature.OwnerID))
+	var p = PlayersContainer.get_node(str(c.PartyCreature.owner_id))
 	battlePlayers[p] -= 1
 	print(battlePlayers)
 	
@@ -249,7 +262,7 @@ func creature_feinted(c):
 
 
 func end_battle():
-	rpc("clear_board_creatures")
+	clear_board_creatures.rpc()
 	var winner = check_wincon()
 	if winner != null:
 		pass
@@ -268,7 +281,7 @@ func loop_game_state():
 		p.party.clear()
 
 	print("===== Game state looping =====")
-	rpc("switch_state", GameStates.TEAM_BUILDING)
+	switch_state.rpc(GameStates.TEAM_BUILDING)
 	start_team_building()
 
 

@@ -50,7 +50,7 @@ func heal(amount):
 
 @rpc("authority", "call_local")
 func die():
-	Fient.emit()
+	Fient.emit(self)
 	queue_free()
 
 
@@ -108,7 +108,7 @@ func electric_attack(target):
 func fire_attack(target):
 	if get_tree().get_multiplayer().is_server():
 		target.damage.rpc(1)
-    	
+		
 
 func ghost_attack(target):
 	if get_tree().get_multiplayer().is_server():

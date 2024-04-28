@@ -15,7 +15,7 @@ func _input(event):
 
 func swap_visisble(i):
 	if (i >= get_child_count() - 1):
-		get_tree().change_scene_to_file("res://Scenes/Levels/Main.tscn")
+		get_tree().change_scene_to_file("res://Scenes/Levels/Client.tscn")
 		print("?")
 		return
 	else:
