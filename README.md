@@ -28,13 +28,14 @@ During this phase, players will connect to a server, and sit in a lobby until th
 started. The game will start when all connected players toggle a ready check.
 
 ## Team Building
-The "Team Building" phase consists of players interacting with a table. The table will have physics properties, allowing players to tilt the board in any direction. Players will attempt to have CAPSULES fall onto their side of the board by shifting around the table, adding to their party.
+The "Team Building" phase consists of players interacting with capsules that spawn over time. These **CAPSULES** can be flung around, you can try and capture your own **CREATURES** to build a perfect team
+or sabotage enemy teams but flinging **CREATURES** into their collection zone.
 
 **CAPSULES** are containers containing **CREATURES**, which are added to your party. Each **CREATURE** contains
 an associated element, such as fire or water. Each **CAPSULE** will indicate the **CREATURE**'s associated
 element, but will not indicate the specific **CREATURE** within.
 
-Once a player has collected a certain amount of **CAPSULES** during the "Team Building" phase, they cannot collect any more. However, they can still continue to tilt the board.
+Once a player has collected a certain amount of **CAPSULES** during the "Team Building" phase, they cannot collect any more. However, they can still interact with the other **CAPSULES** and players.
 
 ## Battle
 During the “Battle Stage,” players must play the **CREATURES** they have acquired onto the board. The player chooses how these **CREATURES** move by selecting a group of them and clicking around the board. The **CREATURES** then attack periodically through an automated timer.
@@ -45,17 +46,22 @@ Points are awarded after each battle, with each combat victory resulting in 1 po
 
 ## Game End
 
-When a player meets a certain threshold of points, that player will be deemed the winner and the game will reset.
+When a player meets a certain threshold of points, that player will be deemed the winner and the game will end.
 
 ---
 
 # Controls
-Only a mouse is required to interact with the game. Players may opt to use keyboard shortcuts if desired.
+Only a mouse is required to interact with the game.
+
+LEFT MOUSE : Grab and release selectable objects. IE **CAPSULES** and **CREATURES**.
+RIGHT MOUSE : Smack players within your cursors range.
 
 ---
 
 # How to Play
-No current available way to play, please check back in the future.
+Server Setup:
+
+Client Setup:
 
 ---
 
