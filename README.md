@@ -29,7 +29,7 @@ started. The game will start when all connected players toggle a ready check.
 
 ## Team Building
 The "Team Building" phase consists of players interacting with capsules that spawn over time. These **CAPSULES** can be flung around, you can try and capture your own **CREATURES** to build a perfect team
-or sabotage enemy teams but flinging **CREATURES** into their collection zone.
+or sabotage enemy teams but flinging **CAPSULES** into their collection zone.
 
 **CAPSULES** are containers containing **CREATURES**, which are added to your party. Each **CREATURE** contains
 an associated element, such as fire or water. Each **CAPSULE** will indicate the **CREATURE**'s associated
@@ -60,6 +60,7 @@ RIGHT MOUSE : Smack players within your cursors range.
 
 # How to Play
 Server Setup:
+
 
 Client Setup:
 
